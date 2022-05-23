@@ -12,28 +12,16 @@ const Log = require("../utils/log");
 //     this.CanceledDate = notification.CanceledDate;
 // }
 class Notification{
-    #Id;
-    #Title;
-    #Message;
-    #IdTag;
-    #DateToSend;
-    #CreationDate;
-    #CanceledDate;
     constructor(notification){
-        this.#Id = notification.Id;
-        this.#Title = notification.Title;
-        this.#Message = notification.Message;
-        this.#IdTag = notification.IdTag;
-        this.#DateToSend = notification.DateToSend;
-        this.#CreationDate = notification.CreationDate;
-        this.#CanceledDate = notification.CanceledDate;
+        this.Id = notification.Id;
+        this.Title = notification.Title;
+        this.Message = notification.Message;
+        this.IdTag = notification.IdTag;
+        this.DateToSend = notification.DateToSend;
+        this.CreationDate = notification.CreationDate;
+        this.CanceledDate = notification.CanceledDate;
     }
-    Id(){ return this.#Id; }
-    Title(){ return this.#Title; }
-    Message(){ return this.#Message; }
-    IdTag(){ return this.#IdTag; }
-    DateToSend(){ return this.#DateToSend; }
-    SetDateToSend(dateToSend){ this.#DateToSend = dateToSend; }
+    // SetDateToSend(dateToSend){ this.#DateToSend = dateToSend; }
 }
 
 Notification.getAll = async () => {

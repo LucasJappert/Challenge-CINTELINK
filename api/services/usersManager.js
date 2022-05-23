@@ -1,5 +1,5 @@
 const Log = require('../utils/log');
-const CacheData = require("./cacheData");
+const DataManager = require("./dataManager");
 
 
 var usersOn = {};
@@ -19,28 +19,34 @@ class UserSocket {
     }
     //TODO: Ver de hacer privado
     async ProcessMessageAsync(json) {
-        console.log(json);
+        //console.log(json);
+        if(json.receivedNotificationId){
+            let noti = this.user?.notifications[json.receivedNotificationId];
+            noti.ReceivedDate = new Date();
+            //TODO: Agregar a tabla NOtificationUser
+        }
         //TODO: procesar el mensaje
     }
     CheckNotifications(){
         //console.log(this.user?.notifications);
-        for (let i = 0; i < this.user?.notifications.length; i++) {
-            const noti = this.user?.notifications[i];
+        Object.keys(this.user?.notifications).forEach(key => {
+            let noti = this.user?.notifications[key];
             if (noti.SendingDate == null){
-                this.SendMessageAsync(noti);
+                this.SendMessageAsync({ newNotification: noti}, (e) => console.log(e) );
                 noti.SendingDate = new Date();
-                // noti.SendingDate();
+                noti.ReceivedDate = null;
             }
-        }
+        });
+    }
+    SendNotification(){
+
     }
     SetUser(user){
         this.user = user;
-        this.SetNotifications();
-    }
-    SetNotifications(){
         if (this.user == null) return;
 
-        CacheData.SetUserNotifications(this.user);
+        this.user.tags = DataManager.GetUserTags(this.user.Id);
+        this.user.notifications = DataManager.GetUserNotifications(this.user.tags);
     }
 
 }
@@ -60,7 +66,7 @@ module.exports.Add = async (socket) => {
 
     usersOn[socket.id] = new UserSocket(socket);
     //TODO: Borra cuando esté listo el login
-    usersOn[socket.id].SetUser(CacheData.GetUser(1));
+    usersOn[socket.id].SetUser(DataManager.GetUser(1));
 }
 
 module.exports.Remove = (socket) => {

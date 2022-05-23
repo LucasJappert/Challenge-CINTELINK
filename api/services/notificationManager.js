@@ -1,4 +1,3 @@
-// const CacheData = require("./cacheData");
 const UsersManager = require('./usersManager');
 
 
@@ -11,8 +10,6 @@ const NotificationsProcess = () => {
 }
 
 (async () => {
-    // await CacheData.InitializeCache()
-
     NotificationsProcess();// Start process
 })()
 

@@ -9,9 +9,9 @@ server.listen(port, async () => {
     Log.BgGreen(`Servidor corriendo en http://localhost:${port}`);
 });
 
-const CacheData = require("./api/services/cacheData");
+const DataManager = require("./api/services/dataManager");
 (async () => {
-    await CacheData.InitializeCache();
+    await DataManager.InitializeCache();
     require("./api/services/notificationManager");
     require("./api/services/socketManager")(server);
 })()
