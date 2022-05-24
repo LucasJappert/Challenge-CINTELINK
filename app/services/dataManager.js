@@ -12,7 +12,6 @@ module.exports.InitializeCache = async() => {
     CacheTag = await Tag.getAll();
     CacheUser = await User.getAll();
     CacheUserTag = await UserTag.getAll();
-    //console.log(CacheUserTag);
 }
 
 
@@ -22,17 +21,32 @@ module.exports.GetUserTags = (userId) => {
         .map(e => e.IdTag);
     return result;
 }
-module.exports.GetUserNotifications = (tags) => {
-    let resultArray = Object.values(CacheNotification)
-        .filter(item => tags.includes(item.IdTag))
+module.exports.GetUserNotifications = (tagIds, userId) => {
+    let notisArray = Object.values(CacheNotification)
+        .filter(item => tagIds.includes(item.IdTag))
         .map(e => e);
-    let resultObject = {};
-    resultArray.forEach(noti => {
+
+    let [resultObject, notiIds] = [{}, []];
+    notisArray.forEach(noti => {
         resultObject[noti.Id] = {...noti};
+        //Set notifications status
+        let status = Object.values(CacheNotificationUser)
+            .find(item => item.IdUser == userId && item.IdNotification == noti.Id);
+        if (status != null){
+            resultObject[noti.Id].ReadingDate = status.ReadingDate;
+            resultObject[noti.Id].SentDate = status.SentDate;
+        }
     });
+
     return resultObject;
 }
+module.exports.SaveNotificationUserAsync = async (noti, userId) => {
+    let newNotificationUser = await NotificationUser.insertOrUpdate(noti, userId);
+    CacheNotificationUser[newNotificationUser.Id] = newNotificationUser;
+
+}
 module.exports.GetUser = (id) => {
+    console.log(id in CacheUser);
     if (id in CacheUser) return CacheUser[id];
     return null;
 }

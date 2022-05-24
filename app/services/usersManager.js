@@ -19,34 +19,44 @@ class UserSocket {
     }
     //TODO: Ver de hacer privado
     async ProcessMessageAsync(json) {
-        //console.log(json);
-        if(json.receivedNotificationId){
-            let noti = this.user?.notifications[json.receivedNotificationId];
-            noti.ReceivedDate = new Date();
-            //TODO: Agregar a tabla NOtificationUser
+        if(json.message != null){
+            console.log(json.message);
         }
-        //TODO: procesar el mensaje
+        if(json.updateReadingDateNotificationId){
+            let noti = this.user?.notifications[json.updateReadingDateNotificationId];
+            if (noti == null) return;//Should not happen
+
+            if (noti.ReadingDate == null)
+                noti.ReadingDate = new Date();
+            else
+                noti.ReadingDate = null;
+
+            DataManager.SaveNotificationUserAsync(noti, this.user.Id);
+            this.SendMessageAsync({ newNotification: noti}, (e) => console.log(e) );
+        }
     }
     CheckNotifications(){
         //console.log(this.user?.notifications);
         Object.keys(this.user?.notifications).forEach(key => {
             let noti = this.user?.notifications[key];
-            if (noti.SendingDate == null){
+            if (noti.SentDate == null){
                 this.SendMessageAsync({ newNotification: noti}, (e) => console.log(e) );
-                noti.SendingDate = new Date();
+                noti.SentDate = new Date();
                 noti.ReceivedDate = null;
+                DataManager.SaveNotificationUserAsync(noti, this.user.Id);
             }
         });
     }
     SendNotification(){
 
     }
-    SetUser(user){
+    InitialSettings(user){
         this.user = user;
         if (this.user == null) return;
 
         this.user.tags = DataManager.GetUserTags(this.user.Id);
-        this.user.notifications = DataManager.GetUserNotifications(this.user.tags);
+        this.user.notifications = DataManager.GetUserNotifications(this.user.tags, this.user.Id);
+        this.SendMessageAsync({ notifications: this.user.notifications}, (e) => console.log(e) );
     }
 
 }
@@ -66,7 +76,7 @@ module.exports.Add = async (socket) => {
 
     usersOn[socket.id] = new UserSocket(socket);
     //TODO: Borra cuando esté listo el login
-    usersOn[socket.id].SetUser(DataManager.GetUser(1));
+    usersOn[socket.id].InitialSettings(DataManager.GetUser(1));
 }
 
 module.exports.Remove = (socket) => {

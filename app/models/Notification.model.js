@@ -21,7 +21,6 @@ class Notification{
         this.CreationDate = notification.CreationDate;
         this.CanceledDate = notification.CanceledDate;
     }
-    // SetDateToSend(dateToSend){ this.#DateToSend = dateToSend; }
 }
 
 Notification.getAll = async () => {

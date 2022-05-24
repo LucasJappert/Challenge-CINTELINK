@@ -1,0 +1,7 @@
+###
+POST http://localhost:2000/api/users
+Content-Type: application/json
+
+{
+    "Nick": "Test1"
+}

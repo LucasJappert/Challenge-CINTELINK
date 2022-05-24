@@ -1,5 +1,5 @@
 require('dotenv').config();
-const logger = require('../middlewares/logger');
+const logger = require('./middlewares/logger');
 const express = require("express");
 const app = express();
 const path = require('path');
@@ -15,6 +15,6 @@ app.use((req, res, next) => {
     res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
     next();
 });
-app.use(express.static(path.join(__dirname, '../../client')));
+app.use(express.static(path.join(__dirname, '../client/')));
 
 module.exports = app;
