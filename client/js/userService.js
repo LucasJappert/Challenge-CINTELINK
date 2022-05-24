@@ -21,6 +21,6 @@ const Login = async (userName) => {
     })
     .catch(error => console.log(error));
 };
-export { Login };
+export { Login, KEY_USER_STORAGE };
 
 // JSON.parse(localStorage.getItem(key));

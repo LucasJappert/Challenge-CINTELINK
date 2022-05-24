@@ -19,10 +19,14 @@ User.getAll = async () => {
         let data = await pool
             .request()
             .query(q);
-        MSSQL.close();
+        MSSQL.close();//FIXME: Ver error Cannot close a pool while it is connecting
 
         data.recordset.forEach(row => {
-            result[row.Id] = new User(row)
+            result[row.Id] = {
+                Id: row.Id,
+                Nick: row.Nick,
+                CreationDate: row.CreationDate
+            };
         });
     } catch (error) {
         Log.Red(error);
@@ -51,7 +55,11 @@ User.add = async (user) => {
         MSSQL.close();
 
         data.recordset.forEach(row => {
-            result = new User(row)
+            result = {
+                Id: row.Id,
+                Nick: row.Nick,
+                CreationDate: row.CreationDate
+            };
         });
     } catch (error) {
         Log.Red(error);

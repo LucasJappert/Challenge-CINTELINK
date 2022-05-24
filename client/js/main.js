@@ -1,4 +1,6 @@
-const ClientSocket = io();
+import * as UserService from "./userService.js";
+
+let ClientSocket;
 let myNotifications = {};
 
 String.prototype.toDDMMYYYYHHMMSS = function () {
@@ -18,33 +20,37 @@ String.prototype.toDDMMYYYYHHMMSS = function () {
     return result;
 }
 
-//#region Socket EVENTS
-ClientSocket.on("message", (data) => {
-    console.log(data);
-    if (data.notifications != null){
-        myNotifications = data.notifications;
-        ResetMenuNotificationsListHTML();
-        console.log(GetOrderedNotifications());
-    }
-    if (data.newNotification != null){
-        myNotifications[data.newNotification.Id] = data.newNotification;
-        ResetMenuNotificationsListHTML();
+//#region Socket EVENTS (Socket connection only start if there's a logged user)
+let loggedUser = JSON.parse(localStorage.getItem(UserService.KEY_USER_STORAGE));
+if (loggedUser != null){
+    ClientSocket = io();
+    ClientSocket.on("message", (data) => {
+        console.log(data);
+        if (data.notifications != null){
+            myNotifications = data.notifications;
+            ResetMenuNotificationsListHTML();
+            console.log(GetOrderedNotifications());
+        }
+        if (data.newNotification != null){
+            myNotifications[data.newNotification.Id] = data.newNotification;
+            ResetMenuNotificationsListHTML();
+            ClientSocket.emit("message", {
+                message: `Notificación ${data.newNotification.Id} recibida/actualizada!`
+            });
+        }
+    });
+
+    function ChangeNotificationMark(notificationId){
+        console.log(notificationId);
         ClientSocket.emit("message", {
-            message: `Notificación ${data.newNotification.Id} recibida/actualizada!`
+            updateReadingDateNotificationId: notificationId
         });
     }
-});
 
-function ChangeNotificationMark(notificationId){
-    console.log(notificationId);
-    ClientSocket.emit("message", {
-        updateReadingDateNotificationId: notificationId
-    });
+    setTimeout(() => {
+        ClientSocket.emit("message", `Hola! soy el cliente: ${ClientSocket.id}`);
+    }, 1000);
 }
-
-setTimeout(() => {
-    ClientSocket.emit("message", `Hola! soy el cliente: ${ClientSocket.id}`);
-}, 1000);
 //#endregion ###########################################################################
 
 //#region DOM Functions
@@ -58,6 +64,8 @@ function GetOrderedNotifications(){
     return Object.values(myNotifications).sort().reverse();
 }
 //#endregion ###########################################################################
+
+//TODO: Ver error que io no está definido, lo larga a veces
 
 //#region DOM Rendering
 function ResetMenuNotificationsListHTML(){
@@ -84,7 +92,7 @@ function SetAmountOfUnreadNotificationsHTML(){
     unreadNotifications.innerHTML = Object.keys(myNotifications).length;
 }
 
-function ShowAllNotificationsHTML(){
+function ShowAllNotificationsHTML () {
     SetContainerAllNotificationsHTML();
     let containerAllNotifications = document.querySelector(".containerAllNotifications");
     containerAllNotifications.classList.add("dBlock");
