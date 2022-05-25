@@ -55,12 +55,15 @@ IF (NOT EXISTS(SELECT TOP 1 * FROM sys.tables WHERE [name] = 'User'))
             Id int NOT NULL PRIMARY KEY IDENTITY,
             Nick varchar(200) NOT NULL UNIQUE,
             Pass varchar(200) NOT NULL,
+            Rol tinyint default 0,
             CreationDate datetime NOT NULL DEFAULT GETDATE(),
             CanceledDate datetime NULL
         )
 		PRINT 'Tabla User creada!';
     END
 GO
+INSERT INTO [User] (Nick, Pass, Rol, CreationDate, CanceledDate)
+VALUES('ADMIN', '1234', 99, getdate(), null);
 
 IF (NOT EXISTS(SELECT TOP 1 * FROM sys.tables WHERE [name] = 'NotificationUser'))
     BEGIN

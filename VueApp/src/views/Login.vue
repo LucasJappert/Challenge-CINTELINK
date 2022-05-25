@@ -8,7 +8,7 @@
             <h3>Login / Register</h3>
 
             <label for="username">Username</label>
-            <input type="text" v-model.trim="username" />
+            <input type="text" v-model.trim="username" ref="username" @keyup.enter="TryLogin()" />
 
             <button id="GoButton" @click="TryLogin()">Go!</button>
         </div>
@@ -24,6 +24,7 @@ export default {
     },
     mounted() {
         this.ClearLoggerUser();
+        this.$refs.username.focus();
     },
     methods: {
         TryLogin() {

@@ -6,7 +6,7 @@ const UserTag = require("../models/UserTag.model");
 
 let CacheNotification, CacheNotificationUser, CacheTag, CacheUser, CacheUserTag = [{}, {}, {}, {}, {}];
 
-module.exports.InitializeCache = async() => {
+module.exports.InitializeCache = async() => {//TODO: Que los métodos async terminen con Async
     CacheNotification = await Notification.getAll();
     CacheNotificationUser = await NotificationUser.getAll();
     CacheTag = await Tag.getAll();
@@ -17,11 +17,12 @@ module.exports.InitializeCache = async() => {
 
 module.exports.GetUserTags = (userId) => {
     let result = Object.values(CacheUserTag)
-        .filter(item => item.IdUser = userId)
+        .filter(item => item.IdUser == userId)
         .map(e => e.IdTag);
     return result;
 }
 module.exports.GetUserNotifications = (tagIds, userId) => {
+
     let notisArray = Object.values(CacheNotification)
         .filter(item => tagIds.includes(item.IdTag))
         .map(e => e);
@@ -46,7 +47,6 @@ module.exports.SaveNotificationUserAsync = async (noti, userId) => {
 
 }
 module.exports.GetUser = (id) => {
-    console.log(id in CacheUser);
     if (id in CacheUser) return CacheUser[id];
     return null;
 }

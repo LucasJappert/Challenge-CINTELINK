@@ -6,6 +6,7 @@ const User = function (user){
     this.Id = user.Id;
     this.Nick = user.Nick ?? '';
     this.Pass = user.Pass ?? '1234';
+    this.Rol = user.Rol ?? 0;
     this.CreationDate = user.CreationDate ?? new Date();
     this.CanceledDate = user.CanceledDate;
 }
@@ -14,7 +15,7 @@ User.getAll = async () => {
     let result = {};
     try {
         let pool = await MSSQL.connect(sqlConn);
-        let q = `SELECT Id, Nick, Pass, CreationDate, CanceledDate
+        let q = `SELECT Id, Nick, Pass, Rol, CreationDate, CanceledDate
                     FROM [User]`;
         let data = await pool
             .request()
@@ -25,7 +26,8 @@ User.getAll = async () => {
             result[row.Id] = {
                 Id: row.Id,
                 Nick: row.Nick,
-                CreationDate: row.CreationDate
+                CreationDate: row.CreationDate,
+                Rol: row.Rol
             };
         });
     } catch (error) {
@@ -40,12 +42,12 @@ User.add = async (user) => {
         let q = `
             IF EXISTS(SELECT TOP 1 Id FROM [User] WHERE Nick=@Nick)
                 BEGIN
-                    SELECT Id, Nick, Pass, CreationDate, CanceledDate FROM [User] WHERE Nick=@Nick;
+                    SELECT Id, Nick, Pass, Rol, CreationDate, CanceledDate FROM [User] WHERE Nick=@Nick;
                 END
             ELSE
                 BEGIN
                     INSERT INTO [User] (Nick, Pass) VALUES (@Nick, '123');
-                    SELECT Id, Nick, Pass, CreationDate, CanceledDate FROM [User] WHERE Id=SCOPE_IDENTITY();
+                    SELECT Id, Nick, Pass, Rol, CreationDate, CanceledDate FROM [User] WHERE Id=SCOPE_IDENTITY();
                 END
         `;
         let data = await pool
@@ -58,7 +60,8 @@ User.add = async (user) => {
             result = {
                 Id: row.Id,
                 Nick: row.Nick,
-                CreationDate: row.CreationDate
+                CreationDate: row.CreationDate,
+                Rol: row.Rol
             };
         });
     } catch (error) {

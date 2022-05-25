@@ -4,6 +4,10 @@ const DataManager = require("./dataManager");
 
 var usersOn = {};
 class UserSocket {
+    user;
+    socket;
+    notifications;
+    socket;
     constructor(socket) {
         this.user = null;
         this.socket = socket;
@@ -22,7 +26,7 @@ class UserSocket {
         if(json.message != null){
             console.log(json.message);
         }
-        if(json.updateReadingDateNotificationId){
+        if(json.updateReadingDateNotificationId != null){
             let noti = this.user?.notifications[json.updateReadingDateNotificationId];
             if (noti == null) return;//Should not happen
 
@@ -34,9 +38,14 @@ class UserSocket {
             DataManager.SaveNotificationUserAsync(noti, this.user.Id);
             this.SendMessageAsync({ newNotification: noti}, (e) => console.log(e) );
         }
+        if(json.loggedUser != null){
+            console.log(`Usuario logueado! ${json.loggedUser.Id}`);
+            usersOn[this.socket.id].InitialSettings(DataManager.GetUser(json.loggedUser.Id));
+        }
     }
     CheckNotifications(){
-        //console.log(this.user?.notifications);
+        if (this.user?.notifications == null) return;
+
         Object.keys(this.user?.notifications).forEach(key => {
             let noti = this.user?.notifications[key];
             if (noti.SentDate == null){
@@ -46,9 +55,6 @@ class UserSocket {
                 DataManager.SaveNotificationUserAsync(noti, this.user.Id);
             }
         });
-    }
-    SendNotification(){
-
     }
     InitialSettings(user){
         this.user = user;
@@ -75,8 +81,6 @@ module.exports.Add = async (socket) => {
     Log.Blue(`Alguien se ha conectado, id: ${socket.id}`);
 
     usersOn[socket.id] = new UserSocket(socket);
-    //TODO: Borra cuando esté listo el login
-    usersOn[socket.id].InitialSettings(DataManager.GetUser(1));
 }
 
 module.exports.Remove = (socket) => {
