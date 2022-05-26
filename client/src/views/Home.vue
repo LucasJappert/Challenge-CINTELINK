@@ -4,7 +4,7 @@
             <router-link class="fa fasLeft fa-arrow-circle-left" :to="{ name: 'Login' }"></router-link>
             <div class="divNickName">{{ getNickName }}</div>
             <div class="notBtn">
-                <div class="number unreadNotifications">
+                <div class="number unreadNotifications" v-if="unreadNotifications.length > 0">
                     {{ unreadNotifications.length }}
                 </div>
                 <i class="fas fa-bell"></i>
@@ -14,7 +14,7 @@
                             Ver todas
                         </div>
                         <div v-for="noti in getNotifications" :key="noti.Id" class="sec" >
-                            <div @click="ChangeNotificationMark(noti.Id)" :class="GetCssClassNotificationState(noti)"></div>
+                            <div @click="UpdateNotificationMark(noti)" :class="GetCssClassNotificationState(noti)"></div>
                             <div class="txt">
                                 {{ noti.Message }}
                             </div>
@@ -38,10 +38,11 @@
                 <div></div>
             </div>
             <div class="row rowNotification" v-for="noti in getNotifications" :key="noti.Id">
-                <div>{{noti.Id}}</div>
-                <div>{{noti.Message}}</div>
-                <div>{{noti.IdTag}}</div>
-                <div>{{noti.SentDate.toDDMMYYYYHHMMSS()}}</div>
+                <div>{{ noti.Id }}</div>
+                <div>{{ noti.Message }}</div>
+                <div>{{ noti.IdTag }}</div>
+                <!-- <div>{{ GetDDMMYYYYHHMMSSFormat(noti) }}</div> -->
+                <div>{{ noti.SentDate }}</div>
                 <div class="aliCenter"><i class="fa fa-trash"></i></div>
             </div>
         </div>
@@ -105,38 +106,52 @@ export default {
         SocketioService.socket.on("message", (data) => {
             if (data.message != null) { console.log(data); }
 
-            if (data.notifications != null) { this.notifications = data.notifications; }
+            // if (data.notifications != null) { this.notifications = data.notifications; }
 
             if (data.newNotification != null) { this.notifications[data.newNotification.Id] = data.newNotification; }
         });
     },
-    mounted() {
+    async mounted() {
         if (this.GetLoggedUser() == null) {
             this.$router.push({ name: "Login" });
             return;
         }
+        this.notifications = await this.GetNotifications(this.getUserId);;
     },
     methods:{
-        ChangeNotificationMark(notiId){
-            SocketioService.SendMessage({ updateReadingDateNotificationId: notiId });
+        UpdateNotificationMark(noti){
+            // let newNoti = {...noti};
+            // if(newNoti.ReadingDate == null) newNoti.ReadingDate = new Date().toLocaleString();
+            // else newNoti.ReadingDate == null;
+            // await this.UpdateNotification(newNoti);
+            SocketioService.SendMessage({ updateReadingDateNotificationId: noti.Id });
         },
         GetCssClassNotificationState(noti){
             return `readNotificacionMark ${noti.ReadingDate != null ? 'read' : ''}`;
         },
         ShowAllNotifications(){
             this.showAllNotifications = !this.showAllNotifications;
-        }
+        },
+        GetDDMMYYYYHHMMSSFormat(noti){
+            if (noti.SentDate == null) return "";
+            return noti.SentDate.toDDMMYYYYHHMMSS();
+        },
     },
     computed: {
         unreadNotifications() {
+            if (this.notifications == null) return [];
             return Object.values(this.notifications).filter(noti => noti.ReadingDate == null);
         },
         getNotifications(){
+            if (this.notifications == null) return [];
             return Object.values(this.notifications).sort().reverse();
         },
         getNickName(){
             return this.GetLoggedUser().Nick;
-        }
+        },
+        getUserId(){
+            return this.GetLoggedUser().Id;
+        },
     },
     beforeUnmount() {
         SocketioService.Disconnect();

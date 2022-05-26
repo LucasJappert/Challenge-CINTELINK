@@ -1,25 +1,27 @@
 const Log = require('../utils/log');
 const DataManager = require("./dataManager");
+const EventEmitter = require("../helpers/eventEmitter");
 
 
 var usersOn = {};
 class UserSocket {
     user;
     socket;
-    notifications;
     socket;
     constructor(socket) {
         this.user = null;
         this.socket = socket;
-        this.notifications = {};
         this.socket.on("message", (data) => {
             this.ProcessMessageAsync(data);
         });
         this.SendMessageAsync({ message: `Hola ${socket.id}!` });
+
+        EventEmitter.obj.on(EventEmitter.EventTypes.newNotification,
+            (newNoti) => this.NewNotification(newNoti));
     }
 
     async SendMessageAsync(json) {
-        this.socket.emit("message", json);
+        this.socket.emit("message", json, (e) => console.log(e));
     }
     //TODO: Ver de hacer privado
     async ProcessMessageAsync(json) {
@@ -27,50 +29,67 @@ class UserSocket {
             console.log(json.message);
         }
         if(json.updateReadingDateNotificationId != null){
-            let noti = this.user?.notifications[json.updateReadingDateNotificationId];
-            if (noti == null) return;//Should not happen
+            const notiId = json.updateReadingDateNotificationId
+            if(this.user == null) return;
+            // console.log(this.user?.notifications);
+            // let noti = this.user?.notifications[json.updateReadingDateNotificationId];
+            let newNoti = DataManager.GetNotificationByUser(this.user.Id, notiId)
+            if (newNoti == null) return;//Should not happen
 
-            if (noti.ReadingDate == null)
-                noti.ReadingDate = new Date();
-            else
-                noti.ReadingDate = null;
+            if (newNoti.ReadingDate == null) newNoti.ReadingDate = new Date();
+            else newNoti.ReadingDate = null;
 
-            DataManager.SaveNotificationUserAsync(noti, this.user.Id);
-            this.SendMessageAsync({ newNotification: noti}, (e) => console.log(e) );
+            await DataManager.UpdateNotificationUserAsync(newNoti, this.user.Id);
+            this.SendMessageAsync({ newNotification: newNoti});
         }
         if(json.loggedUser != null){
             console.log(`Usuario logueado! ${json.loggedUser.Id}`);
-            usersOn[this.socket.id].InitialSettings(DataManager.GetUser(json.loggedUser.Id));
+            // usersOn[this.socket.id].Initialize(DataManager.GetUser(json.loggedUser.Id));
+            this.Initialize(DataManager.GetUser(json.loggedUser.Id));
         }
     }
-    CheckNotifications(){
-        if (this.user?.notifications == null) return;
+    // CheckNotifications(){
+    //     if (this.user?.notifications == null) return;
 
-        Object.keys(this.user?.notifications).forEach(key => {
-            let noti = this.user?.notifications[key];
-            if (noti.SentDate == null){
-                this.SendMessageAsync({ newNotification: noti}, (e) => console.log(e) );
-                noti.SentDate = new Date();
-                noti.ReceivedDate = null;
-                DataManager.SaveNotificationUserAsync(noti, this.user.Id);
-            }
-        });
-    }
-    InitialSettings(user){
+    //     Object.keys(this.user?.notifications).forEach(key => {
+    //         let noti = this.user?.notifications[key];
+    //         if (noti.Sent == null){
+    //             noti.SentDate = new Date();
+    //             this.SendMessageAsync({ newNotification: noti});
+    //             DataManager.CreateNotificationUserAsync(noti, this.user.Id);
+    //         }
+    //     });
+    // }
+    Initialize(user){
         this.user = user;
         if (this.user == null) return;
 
         this.user.tags = DataManager.GetUserTags(this.user.Id);
-        this.user.notifications = DataManager.GetUserNotifications(this.user.tags, this.user.Id);
-        this.SendMessageAsync({ notifications: this.user.notifications}, (e) => console.log(e) );
+        //this.user.notifications = DataManager.GetUserNotifications(this.user.tags, this.user.Id);
+        //this.SendMessageAsync({ notifications: this.user.notifications });//TODO: hacer que se consulte por api
+    }
+    NewNotification(newNoti){
+        if (this.user.tags.includes(newNoti.IdTag)){
+            //this.user.notifications[newNoti.Id] = newNoti;
+            this.SendMessageAsync({ newNotification: newNoti});
+        }
+        // this.user.notifications = DataManager.GetUserNotifications(this.user.tags, this.user.Id);
+        // //Send only the unsent
+        // let result = this.GetUnsentNotifications();
+
+        // this.SendMessageAsync({ notifications: this.user.notifications });
     }
 
 }
-module.exports.CheckNotifications = async () => {
-    Object.keys(usersOn).forEach(key => {
-        usersOn[key]?.CheckNotifications();
-    });
-}
+
+
+
+
+// module.exports.CheckNotifications = async () => {
+//     Object.keys(usersOn).forEach(key => {
+//         usersOn[key]?.CheckNotifications();
+//     });
+// }
 
 
 

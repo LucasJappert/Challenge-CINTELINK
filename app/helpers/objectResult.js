@@ -18,6 +18,10 @@ class ObjectResult {
         this.Validation(res);
         res.status(httpStatusCodes.INTERNAL_SERVER).json({});
     }
+    static SendBadRequest = (res, json) => {
+        this.Validation(res);
+        res.status(httpStatusCodes.BAD_REQUEST).json(json);
+    }
 }
 
 module.exports = { ObjectResult };

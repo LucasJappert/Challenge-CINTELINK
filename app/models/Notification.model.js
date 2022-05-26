@@ -1,6 +1,7 @@
 const MSSQL = require("mssql");
 const sqlConn = require("../db/sqlConn");
 const Log = require("../utils/log");
+const EventEmitter = require("../helpers/eventEmitter");
 
 // const Notification = function (notification){
 //     this.Id = notification.Id;
@@ -37,6 +38,36 @@ Notification.getAll = async () => {
         data.recordset.forEach(row => {
             result[row.Id] = new Notification(row)
         });
+    } catch (error) {
+        Log.Red(error);
+    }
+    return result;
+}
+
+Notification.create = async (notification) => {
+    let result = null;
+    try {
+        let pool = await MSSQL.connect(sqlConn);
+        let q = `
+            INSERT INTO [Notification] (Title, [Message], IdTag, DateToSend)
+                VALUES (@Title, @Message, @IdTag, @DateToSend);
+            SELECT Id, Title, Message, IdTag, DateToSend, CreationDate, CanceledDate
+            FROM [Notification] WHERE Id=SCOPE_IDENTITY();
+        `;
+        let data = await pool
+            .request()
+            .input('Title', MSSQL.VarChar, notification.Title)
+            .input('Message', MSSQL.VarChar, notification.Message)
+            .input('IdTag', MSSQL.Int, notification.IdTag)
+            .input('DateToSend', MSSQL.DateTime, notification.DateToSend)
+            .query(q);
+        //pool.close();//TODO: Ver de cerrar de esta manera.
+        MSSQL.close();
+
+        data.recordset.forEach(row => {
+            result = new Notification(row);
+        });
+        EventEmitter.EmitNewNotification(result);
     } catch (error) {
         Log.Red(error);
     }

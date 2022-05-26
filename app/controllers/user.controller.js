@@ -11,7 +11,7 @@ exports.create = async (req, res) => {
     }
 
     const user = new User({ Nick: req.body?.Nick});
-    let result = await User.add(user);
+    let result = await User.create(user);
 
     if (result == null)
         ObjectResult.SendInternalServer(res);

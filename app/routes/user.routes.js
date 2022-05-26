@@ -4,4 +4,4 @@ module.exports = app => {
     app.post("/api/users", users.create);
 
     app.get("/api/users", users.getAll);
-  };
+};

@@ -23,12 +23,12 @@ String.prototype.toDDMMYYYYHHMMSS = function () {
     try {
         var date = new Date(this);
         result = [
-            `0${date.getDate()}`.slice(-2),
-            `0${date.getMonth() + 1}`.slice(-2),
-            date.getFullYear()].join('/') + ' ' +
-            [`0${date.getHours()}`.slice(-2),
-            `0${date.getMinutes() + 1}`.slice(-2),
-            `0${date.getSeconds() + 1}`.slice(-2)].join(':');
+            `0${date.getUTCDate()}`.slice(-2),
+            `0${date.getUTCMonth() + 1}`.slice(-2),
+            date.getUTCFullYear()].join('/') + ' ' +
+            [`0${date.getUTCHours()}`.slice(-2),
+            `0${date.getUTCMinutes() + 1}`.slice(-2),
+            `0${date.getUTCSeconds() + 1}`.slice(-2)].join(':');
     } catch (error) {
         console.log(error);
     }

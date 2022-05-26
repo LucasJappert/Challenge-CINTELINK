@@ -35,7 +35,7 @@ User.getAll = async () => {
     }
     return result;
 }
-User.add = async (user) => {
+User.create = async (user) => {
     let result = null;
     try {
         let pool = await MSSQL.connect(sqlConn);

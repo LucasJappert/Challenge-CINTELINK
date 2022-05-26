@@ -5,3 +5,14 @@ Content-Type: application/json
 {
     "Nick": "Test1"
 }
+
+###
+POST http://localhost:2000/api/notifications
+Content-Type: application/json
+
+{
+    "Title": "asd",
+    "Message": "Mensaje notificación 4",
+    "IdTag": "1",
+    "DateToSend": "2022-05-24T23:25:03Z"
+}
