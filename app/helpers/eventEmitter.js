@@ -13,9 +13,14 @@ module.exports.obj = EMITTER;
 module.exports.EmitNewNotification = (newNoti) => {
     EMITTER.emit(this.EventTypes.newNotification, newNoti);
 }
+module.exports.EmitNotificationRemoved = (idNoti) => {
+    console.log(`notificacion eliminada! ${idNoti}`);
+    EMITTER.emit(this.EventTypes.NotificationRemoved, idNoti);
+}
 
 module.exports.EventTypes = Object.freeze({
     newNotification: "newNotification",
+    NotificationRemoved: "NotificationRemoved",
 });
 
 //module.exports = MyEventEmitter;

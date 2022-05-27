@@ -1,14 +1,15 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './routes/router.js';
-import utils from './mixins/utils.mixin';
-import userService from './services/user.service';
+import general from './mixins/general.mixin';
+import Header from "./components/Header";
 
 // const io = require('socket.io')();
-// import utils from "./mixins/utils";
 
-Vue.mixin(utils);
-Vue.mixin(userService);
+Vue.component("Header", Header);
+
+Vue.mixin(general);
+// Vue.mixin(userService);
 Vue.config.productionTip = false;
 
 new Vue({

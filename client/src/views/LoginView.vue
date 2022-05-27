@@ -8,14 +8,15 @@
             <h3>Login / Register</h3>
 
             <label for="username">Username</label>
-            <input type="text" v-model.trim="username" ref="username" @keyup.enter="TryLogin()" />
+            <input type="text" v-model.trim="username" ref="username" @keyup.enter="TryLoginAsync()" />
 
-            <button id="GoButton" @click="TryLogin()">Go!</button>
+            <button id="GoButton" @click="TryLoginAsync()">Go!</button>
         </div>
     </div>
 </template>
 
 <script>
+import api from '../services/api.service';
 export default {
     data() {
         return {
@@ -27,12 +28,23 @@ export default {
         this.$refs.username.focus();
     },
     methods: {
-        TryLogin() {
+        async TryLoginAsync() {
             if (this.username.length <= 2) {
                 alert("Nombre inválido!");
                 return;
             }
-            this.Login(this.username);
+            let user = await api.Login(this.username);
+            if (user == null) return;
+
+            this.loggedUser = user;
+            localStorage.setItem(process.env.VUE_APP_KEY_USER_STORAGE, JSON.stringify(user));
+
+            if (user.Rol == 99) {
+                this.$router.push({ name: "Admin" });
+            }
+            else if (user.Rol == 0) {
+                this.$router.push({ name: "User" });
+            }
         },
     },
 };

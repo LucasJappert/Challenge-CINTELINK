@@ -67,7 +67,26 @@ Notification.create = async (notification) => {
         data.recordset.forEach(row => {
             result = new Notification(row);
         });
-        EventEmitter.EmitNewNotification(result);
+        let newNoti = {...result, ReadingDate: null};
+        EventEmitter.EmitNewNotification(newNoti);
+    } catch (error) {
+        Log.Red(error);
+    }
+    return result;
+}
+Notification.delete = async (idNotification) => {
+    let result = 0;
+    try {
+        let pool = await MSSQL.connect(sqlConn);
+        let q = `DELETE FROM [Notification] WHERE Id=@Id;`;
+        let data = await pool
+            .request()
+            .input('Id', MSSQL.Int, idNotification)
+            .query(q);
+        //pool.close();//TODO: Ver de cerrar de esta manera.
+        MSSQL.close();
+        result = idNotification;
+        EventEmitter.EmitNotificationRemoved(idNotification);
     } catch (error) {
         Log.Red(error);
     }

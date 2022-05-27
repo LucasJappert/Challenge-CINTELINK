@@ -30,7 +30,7 @@ NotificationUser.getAll = async () => {
     }
     return result;
 }
-NotificationUser.update = async (notification, userId) => {
+NotificationUser.update = async (userId, notiId, readingDate = null) => {
     let result = {};
     try {
         let pool = await MSSQL.connect(sqlConn);
@@ -39,7 +39,7 @@ NotificationUser.update = async (notification, userId) => {
                 IF EXISTS(SELECT TOP 1 Id FROM NotificationUser WHERE IdUser=@IdUser AND IdNotification=@IdNotification)
                     BEGIN
                         UPDATE NotificationUser
-                            SET ReadingDate=@ReadingDate, CanceledDate=@CanceledDate
+                            SET ReadingDate=@ReadingDate
                         WHERE IdUser=@IdUser AND IdNotification=@IdNotification;
                         SELECT @IdNotificationUser=Id FROM NotificationUser WHERE IdUser=@IdUser AND IdNotification=@IdNotification;
                     END
@@ -55,9 +55,8 @@ NotificationUser.update = async (notification, userId) => {
                 `;
         let data = await pool
             .request()
-            .input('IdNotification', MSSQL.Int, notification.Id)
-            .input('ReadingDate', MSSQL.DateTime, notification.ReadingDate)
-            .input('CanceledDate', MSSQL.DateTime, notification.CanceledDate)
+            .input('IdNotification', MSSQL.Int, notiId)
+            .input('ReadingDate', MSSQL.DateTime, readingDate)
             .input('IdUser', MSSQL.Int, userId)
             .query(q);
         MSSQL.close();
