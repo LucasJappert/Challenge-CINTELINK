@@ -8,7 +8,8 @@ class SocketioService {
     SetupSocketConnection(user) {
       this.socket = io(process.env.VUE_APP_SOCKET_ENDPOINT);//TODO: Asegurarse que el server levante en ese puerto
       user.socketId = this.socket.id;
-      this.SendMessage({ loggedUser: user });
+      //console.log(user);
+      //this.SendMessage({ loggedUser: user });
     }
     Disconnect() {
         if (this.socket) {

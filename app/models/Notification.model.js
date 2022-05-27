@@ -2,6 +2,7 @@ const MSSQL = require("mssql");
 const sqlConn = require("../db/sqlConn");
 const Log = require("../utils/log");
 const EventEmitter = require("../helpers/eventEmitter");
+const { ConvertToArgDate } = require("../utils/tools");
 
 // const Notification = function (notification){
 //     this.Id = notification.Id;
@@ -47,6 +48,8 @@ Notification.getAll = async () => {
 Notification.create = async (notification) => {
     let result = null;
     try {
+
+        const fixedDate = ConvertToArgDate(notification.DateToSend);//TODO: Revisar todas estas fechas
         let pool = await MSSQL.connect(sqlConn);
         let q = `
             INSERT INTO [Notification] (Title, [Message], IdTag, DateToSend)
@@ -59,7 +62,7 @@ Notification.create = async (notification) => {
             .input('Title', MSSQL.VarChar, notification.Title)
             .input('Message', MSSQL.VarChar, notification.Message)
             .input('IdTag', MSSQL.Int, notification.IdTag)
-            .input('DateToSend', MSSQL.DateTime, notification.DateToSend)
+            .input('DateToSend', MSSQL.DateTime, fixedDate)
             .query(q);
         //pool.close();//TODO: Ver de cerrar de esta manera.
         MSSQL.close();
@@ -67,8 +70,8 @@ Notification.create = async (notification) => {
         data.recordset.forEach(row => {
             result = new Notification(row);
         });
-        let newNoti = {...result, ReadingDate: null};
-        EventEmitter.EmitNewNotification(newNoti);
+        let newNoti = {...result, ReadingDate: null};//TODO: El ReadingDate no haría falta acá
+        EventEmitter.NotificationCreated(newNoti);
     } catch (error) {
         Log.Red(error);
     }

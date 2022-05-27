@@ -64,6 +64,7 @@ export default {
                 alert("Debes seleccionar una fecha válida");
                 return;
             }
+            // console.log(this.newNotification.DateToSend); return;
             let result = await api.CreateNotification(this.newNotification);
             if (result != null){
                 this.notifications.push(result);
@@ -84,7 +85,7 @@ export default {
     },
     computed:{
         getNotifications(){
-            return this.notifications.sort((a, b) => a.Id - b.Id).reverse();
+            return this.notifications.sort((a, b) => a.DateToSend - b.DateToSend).reverse();
         },
         getTags(){
             return this.tags.sort((a, b) => a.Id - b.Id);

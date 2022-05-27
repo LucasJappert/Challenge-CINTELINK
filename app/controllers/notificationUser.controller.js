@@ -1,6 +1,5 @@
 const NotificationUser = require("../models/NotificationUser.model");
 const { ObjectResult } = require('../helpers/objectResult');
-const { GetCacheNotificationUser } = require("../services/dataManager");
 
 exports.update = async (req, res) => {
     // TODO: Implementar un validator para controlar todos los campos

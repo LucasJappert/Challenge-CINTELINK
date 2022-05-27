@@ -1,11 +1,15 @@
 export default {
     data(){
         return{
-            loggedUser: null
+            loggedUser: null,
+            showAllNotifications: true,
+            // myNotifications:[],
+            // showAllNotifications: true,
         }
     },
     created(){
         this.loggedUser = this.GetLoggedUser();
+        //console.log(2222);
     },
     mounted(){
         // if (this.loggedUser == null) {
@@ -31,6 +35,20 @@ export default {
         rolAdmin(){
             if (this.loggedUser == null) return false;
             return this.loggedUser.Rol == 99;
-        }
+        },
+        // getUserId(){
+        //     return this.GetLoggedUser().Id;
+        // },
+        getNickName(){
+            return this.GetLoggedUser().Nick;
+        },
+        getSortedNotifications(){
+            return this.$store.getters["notifications/getNotifications"]
+                .sort((a, b) => a.Id - b.Id).reverse();
+        },
+        unreadNotifications() {
+            return this.$store.getters["notifications/getNotifications"]
+            .filter(noti => noti.ReadingDate == null);
+        },
     },
 }

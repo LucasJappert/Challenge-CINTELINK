@@ -7,5 +7,7 @@ module.exports = app => {
 
     app.get("/api/notifications/user/:iduser", notification.getByUser);
 
+    app.get("/api/notifications/user/:iduser/sent", notification.getByUserFilterSent);
+
     app.delete("/api/notification/:id", notification.delete);
 };

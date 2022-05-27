@@ -16,28 +16,29 @@ class UserSocket {
         this.socket.on("message", (data) => {
             this.ProcessMessageAsync(data);
         });
-        this.SendMessageAsync({ message: `Hola ${socket.id}!` });
+        this.SendMessageAsync({
+            message: `Hola ${socket.id}!`,
+            newConnection: socket.id
+         });
 
-        // EventEmitter.obj.on(EventEmitter.EventTypes.newNotification, (newNoti) => {
-        //     //TODO: Chequear que
-        //     //this.NewNotification(newNoti)
-        // });
+        EventEmitter.obj.on(EventEmitter.EventTypes.SendNotificationToOnlineUsers, (newNoti) => {
+            this.SendNotificationToOnlineUsersEvent(newNoti)
+        });
     }
 
     async SendMessageAsync(json) {
-        this.socket.emit("message", json, (e) => console.log(e));
+        this.socket.emit("message", json);
     }
     //TODO: Ver de hacer privado
     async ProcessMessageAsync(json) {
         if(json.message != null){
-            console.log(json.message);
+            console.error(json.message);
         }
         if(json.updateReadingDateNotificationId != null){
             const notiId = json.updateReadingDateNotificationId
             if(this.user == null) return;
 
             let newNoti = await DataManager.GetNotificationByUser(this.user.Id, notiId);
-
             if (newNoti == null) return;//Should not happen
 
             if (newNoti.ReadingDate == null) newNoti.ReadingDate = new Date();
@@ -56,8 +57,8 @@ class UserSocket {
 
         this.user.tags = DataManager.GetUserTags(this.user.Id);//TODO: Eliminar
     }
-    NewNotification(newNoti){
-        if (this.user == null) {
+    SendNotificationToOnlineUsersEvent(newNoti){
+        if (this.user == null) {//Should't happen
             this.socket.disconnect();
             return;
         }

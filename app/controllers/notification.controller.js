@@ -26,6 +26,13 @@ exports.getByUser = async (req, res) => {
     let notifications = await DataManager.GetAllNotificationsByUser(req.params.iduser);
     ObjectResult.SendOk(res, notifications);
 };
+exports.getByUserFilterSent = async (req, res) => {
+    if (req.params.iduser == null) {
+        ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
+    }
+    let notifications = await DataManager.GetSentNotificationsByUser(req.params.iduser);
+    ObjectResult.SendOk(res, notifications);
+};
 
 //TODO:(!) Obtener de cache
 exports.getAll = async (req, res) => {
@@ -46,7 +53,7 @@ exports.delete = async (req, res) => {
     if(sentNotificationsIds.includes(Number(req.params.id))){
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
     }else{
-        DataManager.RemoveNotificationFromCache(req.params.id);
+        DataManager.RemoveCacheNotification(req.params.id);
         let result = await Notification.delete(req.params.id);
         if (result > 0)
             ObjectResult.SendOk(res, {});

@@ -60,7 +60,7 @@ export default {
     //USER
     async GetNotifications(userId) {
         let result = [];
-        result = await axios.get(`${process.env.VUE_APP_API_URL}/notifications/user/${userId}`)
+        result = await axios.get(`${process.env.VUE_APP_API_URL}/notifications/user/${userId}/sent`)
         .then(response => {
             return response.data;
         })

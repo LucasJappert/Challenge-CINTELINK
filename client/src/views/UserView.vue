@@ -1,5 +1,6 @@
 <template>
     <div>
+        <Header></Header>
         <div class="tableContainer" v-if="showAllNotifications">
             <br /><br />
             <div class="Titulo1">
@@ -13,7 +14,7 @@
                 <div>Fecha leída</div>
                 <div></div>
             </div>
-            <div class="row rowNotification" v-for="noti in getNotifications" :key="noti.Id">
+            <div class="row rowNotification" v-for="noti in getSortedNotifications" :key="noti.Id">
                 <div>{{ noti.Id }}</div>
                 <div>{{ noti.IdTag }}</div>
                 <div>{{ noti.Message }}</div>
@@ -68,8 +69,6 @@ import api from '../services/api.service';
 export default {
     data() {
         return {
-            myNotifications:[],
-            showAllNotifications: true,
             tags: []
         };
     },
@@ -80,47 +79,32 @@ export default {
         }
         await SocketioService.SetupSocketConnection(this.loggedUser);
 
-        this.myNotifications = await api.GetNotifications(this.getUserId);
+        // this.myNotifications = await api.GetNotifications(this.getUserId);
+        let result = await api.GetNotifications(this.getUserId);
+        this.$store.dispatch("notifications/setNotifications", result);
     },
     async mounted() {
 
         SocketioService.socket.on("message", (data) => {
             if (data.message != null) { console.log(data); }
 
+            if (data.newConnection != null) {
+                SocketioService.SendMessage({ loggedUser: this.loggedUser });
+                //await SocketioService.SetupSocketConnection(this.loggedUser);
+            }
+
             if (data.newNotification != null) {
-                let index = this.myNotifications.findIndex(e => e.Id == data.newNotification.Id);
-                if (index >= 0){
-                    this.myNotifications[index].ReadingDate = data.newNotification.ReadingDate;
-                }
-                else this.myNotifications.push(data.newNotification);
+                this.$store.dispatch("notifications/addNotification", data.newNotification);
             }
         });
     },
     methods:{
-        UpdateNotificationMark(noti){
-            SocketioService.SendMessage({ updateReadingDateNotificationId: noti.Id });
-        },
-        GetCssClassNotificationState(noti){
-            return `readNotificacionMark ${noti.ReadingDate != null ? 'read' : ''}`;
-        },
         GetDDMMYYYYHHMMSSFormat(date){
             if (date == null) return "";
             return date.toDDMMYYYYHHMMSS();
         },
     },
     computed: {
-        getUserId(){
-            return this.GetLoggedUser().Id;
-        },
-        unreadNotifications() {
-            return this.myNotifications.filter(noti => noti.ReadingDate == null);
-        },
-        getNotifications(){
-            return this.myNotifications.sort((a, b) => a.Id - b.Id).reverse();
-        },
-        getNickName(){
-            return this.GetLoggedUser().Nick;
-        },
     },
     beforeUnmount() {
         SocketioService.Disconnect();

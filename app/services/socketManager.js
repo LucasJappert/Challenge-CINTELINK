@@ -10,6 +10,7 @@ module.exports = async (server) => {
 
     ServerSocket.on("connection", (socket) => {
         UsersManager.Add(socket);
+        console.log(`Users on: ${Object.keys(UsersManager.GetAll()).length}`);
 
         socket.on('disconnect', () => {
             UsersManager.Remove(socket);

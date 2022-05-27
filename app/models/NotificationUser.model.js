@@ -1,6 +1,7 @@
 const MSSQL = require("mssql");
 const sqlConn = require("../db/sqlConn");
 const Log = require("../utils/log");
+const EventEmitter = require("../helpers/eventEmitter");
 
 const NotificationUser = function (notificationUser){
     this.Id = Number(notificationUser.Id);
@@ -30,7 +31,8 @@ NotificationUser.getAll = async () => {
     }
     return result;
 }
-NotificationUser.update = async (userId, notiId, readingDate = null) => {
+
+NotificationUser.createOrUpdate = async (userId, notiId, readingDate = null) => {
     let result = {};
     try {
         let pool = await MSSQL.connect(sqlConn);

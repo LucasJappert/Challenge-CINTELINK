@@ -1,7 +1,7 @@
 const Log = require('../utils/log');
 
 let sqlConn;
-//console.log(process.env.NODE_ENV);
+//console.error(process.env.NODE_ENV);
 
 //TODO: Chequear
 // if (devScope) {

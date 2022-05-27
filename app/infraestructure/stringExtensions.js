@@ -10,7 +10,7 @@ String.prototype.toDDMMYYYYHHMMSS = function () {
             date.getMinutes().padLeft(),
             date.getSeconds().padLeft()].join(':');
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
     return result;
 }

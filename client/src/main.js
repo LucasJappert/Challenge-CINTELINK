@@ -3,6 +3,7 @@ import App from './App.vue';
 import router from './routes/router.js';
 import general from './mixins/general.mixin';
 import Header from "./components/Header";
+import store from "./store/index";
 
 // const io = require('socket.io')();
 
@@ -14,6 +15,7 @@ Vue.config.productionTip = false;
 
 new Vue({
   router,
+  store,
   render: h => h(App),
 }).$mount('#app')
 
