@@ -4,7 +4,7 @@ const DataManager = require("../services/dataManager");
 
 
 exports.create = async (req, res) => {
-    // TODO: Implementar un validator para controlar todos los campos
+    // TODO: VALIDATOR
     if (req.body == null) {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
     }
@@ -34,7 +34,6 @@ exports.getByUserFilterSent = async (req, res) => {
     ObjectResult.SendOk(res, notifications);
 };
 
-//TODO:(!) Obtener de cache
 exports.getAll = async (req, res) => {
     //TODO: poner filtro para que sólo la pueda acceder un ADMIN
     let result = DataManager.GetAllNotifications();// await Notification.getAll();
@@ -42,7 +41,7 @@ exports.getAll = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-    // TODO: Implementar un validator para controlar todos los campos
+    // TODO: VALIDATOR
     if (req.params.id == null) {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
     }

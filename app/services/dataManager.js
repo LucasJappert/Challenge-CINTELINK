@@ -166,6 +166,7 @@ const CheckReadingDateNotification = async (userId, notiId) => {
     return status.ReadingDate;
 }
 
+//TODO Sacar el obj de export y pasar como parámetro la función y eventype
 EventEmitter.obj.on(EventEmitter.EventTypes.NotificationCreated,
                     (newNoti) => CacheNotification[newNoti.Id] = newNoti);
 

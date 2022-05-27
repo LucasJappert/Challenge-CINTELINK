@@ -2,7 +2,7 @@ const NotificationUser = require("../models/NotificationUser.model");
 const { ObjectResult } = require('../helpers/objectResult');
 
 exports.update = async (req, res) => {
-    // TODO: Implementar un validator para controlar todos los campos
+    // TODO: VALIDATOR
     if (req.body == null) {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
     }

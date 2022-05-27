@@ -1,10 +1,9 @@
 const Log = require('../utils/log');
 module.exports = (req, res, next) => {
-    let start = new Date();
+    let start = performance.now();
     LogBeginRequest(req);
     next();
-    //TODO: Ver el calculo de los miliseconds
-    let miliseconds = new Date().getTime() - start.getTime();
+    let miliseconds = performance.now() - start;
     LogEndRequest(res, miliseconds);
 }
 const LogBeginRequest = (req) => {

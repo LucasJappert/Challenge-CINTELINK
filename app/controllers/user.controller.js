@@ -3,7 +3,7 @@ const { ObjectResult } = require('../helpers/objectResult');
 
 
 exports.create = async (req, res) => {
-    // TODO: Implementar un validator
+    // TODO: VALIDATOR
     if (req.body?.Nick == null) {
         res.status(400).send({
             message: "Content can not be empty!"

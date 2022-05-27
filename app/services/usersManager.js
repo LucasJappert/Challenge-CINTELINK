@@ -8,8 +8,6 @@ class UserSocket {
     user;
     socket;
     socket;
-    //TODO: eliminar usuarios huérfanos.
-    // Pasa cuando reseteamos el server y se conectan los sockets clientes logueados
     constructor(socket) {
         this.user = null;
         this.socket = socket;
@@ -21,6 +19,7 @@ class UserSocket {
             newConnection: socket.id
          });
 
+         //TODO Sacar el obj de export y pasar como parámetro la función y eventype
         EventEmitter.obj.on(EventEmitter.EventTypes.SendNotificationToOnlineUsers, (newNoti) => {
             this.SendNotificationToOnlineUsersEvent(newNoti)
         });
