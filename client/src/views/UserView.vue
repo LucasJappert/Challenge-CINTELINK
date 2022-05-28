@@ -33,7 +33,12 @@
                 <div>Nombre</div>
                 <div class="aliCenter"></div>
             </div>
-            <!-- <div class="row" v-for="noti in getNotifications" :key="noti.Id">
+            <div class="row rowTag" v-for="tag in getSortedTags" :key="tag.Id">
+                <div>{{ tag.Id }}</div>
+                <div>{{ tag.Name }}</div>
+                <div class="aliCenter" @click="SubscriptionTagClick(tag.Id)">{{ getTextOption(tag.Id) }}</div>
+            </div>
+            <!-- <div class="row" v-for="noti in getSortedNotifications" :key="noti.Id">
                 <div>{{noti.Id}}</div>
                 <div>{{noti.Message}}</div>
                 <div>{{noti.IdTag}}</div>
@@ -71,7 +76,6 @@ import api from '../services/api.service';
 export default {
     data() {
         return {
-            tags: []
         };
     },
     async created() {
@@ -83,8 +87,13 @@ export default {
 
         // this.myNotifications = await api.GetNotifications(this.getUserId);
         let result = await api.GetNotifications(this.getUserId);
-        console.log(result);
         this.$store.dispatch("notifications/setNotifications", result);
+
+        let tags = await api.GetTags();
+        this.$store.dispatch("tags/setTags", tags);
+
+        let myTags = await api.GetMyTags(this.getUserId);
+        this.$store.dispatch("tags/setMyTags", myTags);
     },
     async mounted() {
 
@@ -113,6 +122,29 @@ export default {
         async DeleteNotificationUserAsync(noti){
             let result = await api.DeleteNotificationUserAsync(noti.IdNotiUser);
             console.log(result); //La notificación se eliminará de la vista a traves de un mensaje por socket
+        },
+        getTextOption(tagId){
+            if (this.getMyTags.find(e => e.IdTag == tagId)){
+                return "Suscripto!!! Click para desubscribirse...";
+            }
+            return "Click para subscribirse!";
+        },
+        async SubscriptionTagClick(tagId){
+            let myTags = await api.UpdateSubscriptionTag(this.getUserId, tagId);
+            this.$store.dispatch("tags/setMyTags", myTags);
+        }
+    },
+    computed: {
+        getSortedNotifications(){
+            return this.$store.getters["notifications/getNotifications"]
+                .sort((a, b) => a.Id - b.Id).reverse();
+        },
+        getSortedTags(){
+            return this.$store.getters["tags/getTags"]
+                .sort((a, b) => a.Id - b.Id);
+        },
+        getMyTags(){
+            return this.$store.getters["tags/getMyTags"];
         },
     },
     beforeUnmount() {

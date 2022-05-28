@@ -55,14 +55,14 @@ class UserSocket {
         this.user = user;
         if (this.user == null) return;
 
-        this.user.tags = DataManager.GetUserTags(this.user.Id);//TODO: Eliminar
+        this.user.tags = DataManager.GetUserTagsId(this.user.Id);//TODO: Eliminar
     }
     SendNotificationToOnlineUserEvent(newNoti){
         if (this.user == null) {//Should't happen
             this.socket.disconnect();
             return;
         }
-        const tagsId = DataManager.GetUserTags(this.user.Id);
+        const tagsId = DataManager.GetUserTagsId(this.user.Id);
         if (tagsId.includes(newNoti.IdTag)){
             this.SendMessageAsync({ newNotification: newNoti});
         }

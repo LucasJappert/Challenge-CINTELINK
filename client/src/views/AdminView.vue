@@ -31,7 +31,7 @@
                 <div>{{ noti.DateToSend.toDDMMYYYYHHMMSS() }}</div>
                 <div class="aliCenter">
                     <!-- TODO: mostrar solamente si la notificación aún no se envió -->
-                    <i class="fa fa-trash" @click="RemoveNotificationAsync(noti.Id)"></i>
+                    <i class="fa fa-trash" @click="RemoveNotificationAsync(noti.Id)" v-if="allowDelete(noti)"></i>
                 </div>
             </div>
         </div>
@@ -45,7 +45,6 @@ export default {
     data(){
         return{
             notifications: [],
-            tags:[],
             newNotification: {
                 Message: "",
                 DateToSend: null,
@@ -56,7 +55,6 @@ export default {
     },
     async created(){
         this.notifications = await api.GetAllNotifications();
-        this.tags = await api.GetTags();
     },
     methods:{
         async AddNotificationAsync() {
@@ -73,12 +71,12 @@ export default {
             }
         },
         async RemoveNotificationAsync(idNotification){
-            let result1 = this.notifications.find(e => e.Id == idNotification);
-            console.log(new Date(result1.DateToSend));
-            console.log(result1.DateToSend.replace("T", " ").replace("Z", "").replace(".000", ""));
-            console.log(new Date(result1.DateToSend.replace("T", " ").replace("Z", "").replace(".000", "")));
-            console.log(result1.DateToSend < new Date());
-            return;
+            let noti = this.notifications.find(e => e.Id == idNotification);
+            if (noti.DateToSend.ToMyLocalDate() < new Date()){
+                alert("No se permite eliminar una notificación que ya fue enviada!");
+                return;
+            }
+
             let result = await api.DeleteNotification(idNotification);
             if(result)
                 this.notifications = this.notifications.filter(item => item.Id != idNotification);
@@ -88,14 +86,17 @@ export default {
             this.newNotification.DateToSend = null;
             this.newNotification.IdTag = 1;
             this.newNotification.Title = "";
-        }
+        },
+        allowDelete(noti){
+            if (noti.DateToSend.ToMyLocalDate() < new Date()){
+                return false;
+            }
+            return true;
+        },
     },
     computed:{
         getNotifications(){
             return this.notifications.sort((a, b) => a.Id - b.Id).reverse();
-        },
-        getTags(){
-            return this.tags.sort((a, b) => a.Id - b.Id);
         },
     }
 };

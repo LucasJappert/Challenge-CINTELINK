@@ -31,6 +31,7 @@ module.exports.GetCacheNotificationUserById = (id) => {
     return CacheSentNotificationsUser[id];
 }
 //#endregion ------------------------------
+
 //#region SETTERS
 module.exports.RemoveCacheNotification = (idNotification) => {
     delete CacheNotification[idNotification];
@@ -40,6 +41,18 @@ module.exports.SaveCacheSentNotificationsUser = (newRecord) => {
         return false;//Should't happen
     }
     CacheSentNotificationsUser[newRecord.Id] = newRecord;
+    return true;
+}
+module.exports.UpdateCacheUserTag = (newRecord) => {
+    if (newRecord == null){
+        return false;//Should't happen
+    }
+
+    if (newRecord.CanceledDate != null)
+        delete CacheUserTag[newRecord.Id];
+    else
+        CacheUserTag[newRecord.Id] = newRecord;
+
     return true;
 }
 /**
@@ -60,6 +73,9 @@ module.exports.RemoveSentNotificationUserAsync = async (idNotiUser) => {
     //Remove cache
     delete CacheSentNotificationsUser[idNotiUser];
     return result;
+}
+module.exports.RemoveCacheUserTag = (id) => {
+    delete CacheUserTag[id];
 }
 //#endregion ------------------------------
 
@@ -100,7 +116,18 @@ module.exports.GetUsersIdSubscribedToATag = (tagId) => {
     return result;
 }
 
+module.exports.GetUserTag = (userId, tagId) => {
+    let result = Object.values(CacheUserTag)
+        .find(item => item.IdUser == userId && item.IdTag == tagId);
+    return result;
+}
 module.exports.GetUserTags = (userId) => {
+    let result = Object.values(CacheUserTag)
+        .filter(item => item.IdUser == userId)
+        .map(e => e);
+    return result;
+}
+module.exports.GetUserTagsId = (userId) => {
     let result = Object.values(CacheUserTag)
         .filter(item => item.IdUser == userId)
         .map(e => e.IdTag);
@@ -142,7 +169,7 @@ module.exports.GetNotificationModelFromIdNotiUser = (idNotiUser) => {
 }
 //Obtener todas las notificaciones de un usuario
 module.exports.GetAllNotificationsByUser = (userId) => {
-    let tagIds = this.GetUserTags(userId);
+    let tagIds = this.GetUserTagsId(userId);
     let allNotis = this.GetAllNotifications()
         .filter(noti => tagIds.includes(noti.IdTag));
     allNotis = allNotis.map(noti => this.GetNotificationModelForUser(noti, userId));

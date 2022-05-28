@@ -228,7 +228,7 @@ header {
     border-bottom: 1px solid rgba(0 0 0 / 20%);
 }
 .rowNotification{ grid-template-columns: 0.3fr 0.5fr 50% 1.1fr 0.7fr; }
-.rowTag{  grid-template-columns: 0.5fr 2fr 0.5fr; }
+.rowTag{  grid-template-columns: 0.2fr 1.5fr 1.5fr; }
 .row:not(:first-child){
     cursor:pointer;
 }

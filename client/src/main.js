@@ -37,3 +37,14 @@ String.prototype.toDDMMYYYYHHMMSS = function () {
     }
     return result;
 }
+String.prototype.ToMyLocalDate = function () {
+    let date = new Date(this);
+    try {
+        let result = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
+                            date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+        return result;
+    } catch (error) {
+        console.log(error);
+    }
+    return date;
+}

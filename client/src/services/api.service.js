@@ -32,6 +32,28 @@ export default {
         });
         return result;
     },
+    async GetMyTags(userId) {
+        let result = null;
+        result = await axios.get(`${process.env.VUE_APP_API_URL}/tags/user/${userId}`)
+        .then(response => {
+            return response.data;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+        return result;
+    },
+    async UpdateSubscriptionTag(userId, tagId) {
+        let result = null;
+        result = await axios.post(`${process.env.VUE_APP_API_URL}/tag/${tagId}/user/${userId}`)
+        .then(response => {
+            return response.data;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+        return result;
+    },
     async CreateNotification(newNotification) {
         let result = null;
         result = await axios.post(`${process.env.VUE_APP_API_URL}/notification`, newNotification)

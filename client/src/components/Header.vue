@@ -43,6 +43,14 @@ export default {
         },
     },
     computed: {
+        getSortedNotifications(){
+            return this.$store.getters["notifications/getNotifications"]
+                .sort((a, b) => a.Id - b.Id).reverse();
+        },
+        unreadNotifications() {
+            return this.$store.getters["notifications/getNotifications"]
+            .filter(noti => noti.ReadingDate == null);
+        },
     }
 };
 </script>

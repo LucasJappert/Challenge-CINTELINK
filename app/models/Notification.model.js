@@ -20,7 +20,7 @@ class Notification{
         this.Message = notification.Message;
         this.IdTag = notification.IdTag;
         this.DateToSend = notification.DateToSend;
-        this.CreationDate = notification.CreationDate;
+        this.CreationDate = notification.CreationDate;//.RemoveTZ();
         this.CanceledDate = notification.CanceledDate;
     }
 }
@@ -37,7 +37,7 @@ Notification.getAll = async () => {
         MSSQL.close();
 
         data.recordset.forEach(row => {
-            result[row.Id] = new Notification(row)
+            result[row.Id] = new Notification(row);
         });
     } catch (error) {
         Log.Red(error);
