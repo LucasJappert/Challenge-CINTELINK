@@ -11,7 +11,7 @@
                 <i class="fas fa-bell"></i>
                 <div class="box">
                     <div class="notificationsList" v-if="$store.getters['notifications/getNotifications'].length > 0" >
-                        <div @click="showAllNotifications = true" class="seeAll" >
+                        <div @click="$store.dispatch('notifications/invertShowAllNotifications')" class="seeAll" >
                             Ver todas
                         </div>
                         <div v-for="noti in getSortedNotifications" :key="noti.Id" class="sec" >
@@ -36,7 +36,7 @@ export default {
     name: "Header",
     methods:{
         UpdateNotificationMark(noti){
-            SocketioService.SendMessage({ updateReadingDateNotificationId: noti.Id });
+            SocketioService.SendMessage({ updateReadingDateIdNotiUser: noti.IdNotiUser });
         },
         GetCssClassNotificationState(noti){
             return `readNotificacionMark ${noti.ReadingDate != null ? 'read' : ''}`;

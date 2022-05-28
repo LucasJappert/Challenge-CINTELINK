@@ -68,10 +68,17 @@ export default {
             let result = await api.CreateNotification(this.newNotification);
             if (result != null){
                 this.notifications.push(result);
+                //this.notifications.sort((a, b) => a.Id - b.Id).reverse();
                 this.resetNewNotification();
             }
         },
         async RemoveNotificationAsync(idNotification){
+            let result1 = this.notifications.find(e => e.Id == idNotification);
+            console.log(new Date(result1.DateToSend));
+            console.log(result1.DateToSend.replace("T", " ").replace("Z", "").replace(".000", ""));
+            console.log(new Date(result1.DateToSend.replace("T", " ").replace("Z", "").replace(".000", "")));
+            console.log(result1.DateToSend < new Date());
+            return;
             let result = await api.DeleteNotification(idNotification);
             if(result)
                 this.notifications = this.notifications.filter(item => item.Id != idNotification);
@@ -85,7 +92,7 @@ export default {
     },
     computed:{
         getNotifications(){
-            return this.notifications.sort((a, b) => a.DateToSend - b.DateToSend).reverse();
+            return this.notifications.sort((a, b) => a.Id - b.Id).reverse();
         },
         getTags(){
             return this.tags.sort((a, b) => a.Id - b.Id);

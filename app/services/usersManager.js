@@ -20,9 +20,14 @@ class UserSocket {
          });
 
          //TODO Sacar el obj de export y pasar como parámetro la función y eventype
-        EventEmitter.obj.on(EventEmitter.EventTypes.SendNotificationToOnlineUsers, (newNoti) => {
-            this.SendNotificationToOnlineUsersEvent(newNoti)
+        EventEmitter.obj.on(EventEmitter.EventTypes.SendNotificationToOnlineUser, (newNoti) => {
+            this.SendNotificationToOnlineUserEvent(newNoti)
         });
+        //TODO Sacar el obj de export y pasar como parámetro la función y eventype
+        EventEmitter.obj.on(EventEmitter.EventTypes.NotificationUserRemoved, (notiUser) => {
+            this.EventNotificationUserRemoved(notiUser)
+        });
+
     }
 
     async SendMessageAsync(json) {
@@ -33,17 +38,13 @@ class UserSocket {
         if(json.message != null){
             console.error(json.message);
         }
-        if(json.updateReadingDateNotificationId != null){
-            const notiId = json.updateReadingDateNotificationId
+        if(json.updateReadingDateIdNotiUser != null){
+            const idNotiUser = json.updateReadingDateIdNotiUser;
             if(this.user == null) return;
 
-            let newNoti = await DataManager.GetNotificationByUser(this.user.Id, notiId);
-            if (newNoti == null) return;//Should not happen
-
-            if (newNoti.ReadingDate == null) newNoti.ReadingDate = new Date();
-            else newNoti.ReadingDate = null;
-            await DataManager.UpdateNotificationUserAsync(this.user.Id, newNoti.Id, newNoti.ReadingDate);
-            this.SendMessageAsync({ newNotification: newNoti});
+            await DataManager.ChangeReadingDateOfANotificationAsync(idNotiUser);
+            let updatedNoti = DataManager.GetNotificationModelFromIdNotiUser(idNotiUser);
+            this.SendMessageAsync({ newNotification: updatedNoti});
         }
         if(json.loggedUser != null){
             console.log(`Usuario logueado! ${json.loggedUser.Id}`);
@@ -56,7 +57,7 @@ class UserSocket {
 
         this.user.tags = DataManager.GetUserTags(this.user.Id);//TODO: Eliminar
     }
-    SendNotificationToOnlineUsersEvent(newNoti){
+    SendNotificationToOnlineUserEvent(newNoti){
         if (this.user == null) {//Should't happen
             this.socket.disconnect();
             return;
@@ -64,6 +65,15 @@ class UserSocket {
         const tagsId = DataManager.GetUserTags(this.user.Id);
         if (tagsId.includes(newNoti.IdTag)){
             this.SendMessageAsync({ newNotification: newNoti});
+        }
+    }
+    EventNotificationUserRemoved(notiUser){
+        if (this.user == null) {//Should't happen
+            this.socket.disconnect();
+            return;
+        }
+        if (this.user.Id == notiUser.IdUser){
+            this.SendMessageAsync({ notificationUserRemoved: notiUser});
         }
     }
 

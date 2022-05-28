@@ -69,4 +69,18 @@ export default {
         });
         return result;
     },
+    async DeleteNotificationUserAsync(idNotiUser) {
+        let result = null;
+        result = await axios.delete(`${process.env.VUE_APP_API_URL}/notification/user/${idNotiUser}`)
+        .then(response => {
+            if(response.status == 200) return true;
+
+            return false;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+        return result;
+    },
+
 }

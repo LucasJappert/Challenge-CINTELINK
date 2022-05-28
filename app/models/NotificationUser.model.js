@@ -1,7 +1,6 @@
 const MSSQL = require("mssql");
 const sqlConn = require("../db/sqlConn");
 const Log = require("../utils/log");
-const EventEmitter = require("../helpers/eventEmitter");
 
 const NotificationUser = function (notificationUser){
     this.Id = Number(notificationUser.Id);
@@ -11,13 +10,21 @@ const NotificationUser = function (notificationUser){
     this.CreationDate = notificationUser.CreationDate;
     this.CanceledDate = notificationUser.CanceledDate;
 }
+NotificationUser.GetNewObject = (userId, notiId) => {
+    return new NotificationUser({
+        IdNotification: notiId,
+        IdUser: userId,
+        ReadingDate: null,
+        CanceledDate: null
+    })
+}
 
 NotificationUser.getAll = async () => {
     let result = {};
     try {
         let pool = await MSSQL.connect(sqlConn);
         let q = `SELECT Id, IdNotification, IdUser, ReadingDate, CreationDate, CanceledDate
-                FROM [NotificationUser]`;
+                FROM [NotificationUser] WHERE CanceledDate IS NULL`;
         let data = await pool
             .request()
             .query(q);
@@ -32,7 +39,9 @@ NotificationUser.getAll = async () => {
     return result;
 }
 
-NotificationUser.createOrUpdate = async (userId, notiId, readingDate = null) => {
+// NotificationUser.createOrUpdate = async (userId, notiId, readingDate = null) => {
+NotificationUser.createOrUpdate = async (notiUser) => {
+    if (notiUser == null) throw new Error("notiUser can't be null!");//TODO: Crear test aca
     let result = {};
     try {
         let pool = await MSSQL.connect(sqlConn);
@@ -41,9 +50,10 @@ NotificationUser.createOrUpdate = async (userId, notiId, readingDate = null) => 
                 IF EXISTS(SELECT TOP 1 Id FROM NotificationUser WHERE IdUser=@IdUser AND IdNotification=@IdNotification)
                     BEGIN
                         UPDATE NotificationUser
-                            SET ReadingDate=@ReadingDate
-                        WHERE IdUser=@IdUser AND IdNotification=@IdNotification;
-                        SELECT @IdNotificationUser=Id FROM NotificationUser WHERE IdUser=@IdUser AND IdNotification=@IdNotification;
+                            SET ReadingDate=@ReadingDate, CanceledDate=@CanceledDate
+                            WHERE IdUser=@IdUser AND IdNotification=@IdNotification;
+                        SELECT @IdNotificationUser=Id FROM NotificationUser
+                            WHERE IdUser=@IdUser AND IdNotification=@IdNotification;
                     END
                 ELSE
                     BEGIN
@@ -57,9 +67,10 @@ NotificationUser.createOrUpdate = async (userId, notiId, readingDate = null) => 
                 `;
         let data = await pool
             .request()
-            .input('IdNotification', MSSQL.Int, notiId)
-            .input('ReadingDate', MSSQL.DateTime, readingDate)
-            .input('IdUser', MSSQL.Int, userId)
+            .input('IdNotification', MSSQL.Int, notiUser.IdNotification)
+            .input('ReadingDate', MSSQL.DateTime, notiUser.ReadingDate)
+            .input('IdUser', MSSQL.Int, notiUser.IdUser)
+            .input('CanceledDate', MSSQL.DateTime, notiUser.CanceledDate)
             .query(q);
         MSSQL.close();
 

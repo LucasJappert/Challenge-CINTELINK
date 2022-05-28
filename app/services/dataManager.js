@@ -4,6 +4,7 @@ const Tag = require("../models/Tag.model");
 const User = require("../models/User.model");
 const UserTag = require("../models/UserTag.model");
 const EventEmitter = require("../helpers/eventEmitter");
+const tools = require("../utils/tools");
 
 let CacheNotification, CacheSentNotificationsUser, CacheTag, CacheUser, CacheUserTag = [{}, {}, {}, {}, {}];
 
@@ -23,6 +24,12 @@ module.exports.GetCacheNotificationUser = (idNotification, userId) => {
             .find(item => item.IdUser == userId && item.IdNotification == idNotification);
     return result;
 }
+module.exports.GetCacheNotificationById = (id) => {
+    return CacheNotification[id];
+}
+module.exports.GetCacheNotificationUserById = (id) => {
+    return CacheSentNotificationsUser[id];
+}
 //#endregion ------------------------------
 //#region SETTERS
 module.exports.RemoveCacheNotification = (idNotification) => {
@@ -35,6 +42,25 @@ module.exports.SaveCacheSentNotificationsUser = (newRecord) => {
     CacheSentNotificationsUser[newRecord.Id] = newRecord;
     return true;
 }
+/**
+ * The function is responsible for saving in cache and in DB
+ */
+module.exports.RemoveSentNotificationUserAsync = async (idNotiUser) => {
+    let notiUser = CacheSentNotificationsUser[idNotiUser];
+
+    if (notiUser == null) return;// Should't happen
+
+    //update cache
+    notiUser.CanceledDate = tools.DateNow();
+
+    //update DB
+    let result = await NotificationUser.createOrUpdate(notiUser);
+    //Notify to user
+    EventEmitter.EmitNotificationUserRemoved(result);
+    //Remove cache
+    delete CacheSentNotificationsUser[idNotiUser];
+    return result;
+}
 //#endregion ------------------------------
 
 
@@ -45,6 +71,26 @@ const GetReadingDate = (notificationId, userId) => {
 const GetSentDate = (notificationId, userId) => {
     let result = this.GetCacheNotificationUser(notificationId, userId);
     return result ? result.CreationDate : null;
+}
+const GetIdNotiUser = (notificationId, userId) => {
+    let result = this.GetCacheNotificationUser(notificationId, userId);
+    return result ? result.Id : null;
+}
+/**
+ * obj param can be a NotificationUser or an userId
+ */
+ module.exports.GetNotificationModelForUser = (noti, obj) => {
+    let ReadingDate, SentDate, IdNotiUser;
+    if (obj.ReadingDate !== undefined){ //check if params is a notiUser
+        ReadingDate = obj.ReadingDate;
+        SentDate = obj.SentDate;
+        IdNotiUser = obj.Id;
+    }else{
+        ReadingDate = GetReadingDate(noti.Id, obj);
+        SentDate = GetSentDate(noti.Id, obj);
+        IdNotiUser = GetIdNotiUser(noti.Id, obj);
+    }
+    return {...noti, ReadingDate, SentDate, IdNotiUser};
 }
 
 module.exports.GetUsersIdSubscribedToATag = (tagId) => {
@@ -63,39 +109,34 @@ module.exports.GetUserTags = (userId) => {
 
 //Obtener todos los tags
 module.exports.GetAllTags = () => {
+    if (!this.LoadingsOk) return;
     return Object.values(CacheTag);
 }
 
 //Obtener todas las notificaciones
 module.exports.GetAllNotifications = () => {
-    if(CacheNotification == null){
-        console.error(CacheNotification)
-    }
+    if (!this.LoadingsOk) return;
     return Object.values(CacheNotification);
 }
 //Obtener todas las notificaciones enviadas de un usuario
 module.exports.GetSentNotificationsByUser = (userId) => {
+    if (!this.LoadingsOk) return;
     let sentNotifications = Object.values(CacheSentNotificationsUser)
                         .filter(noti => noti.IdUser == userId);
 
     let result = [];
     sentNotifications.forEach(noti => {
         let newNoti = CacheNotification[noti.IdNotification];
-        result.push({...newNoti,
-                    ReadingDate: noti.ReadingDate,
-                    SentDate: GetSentDate(noti.IdNotification, userId)})
+        result.push(this.GetNotificationModelForUser(newNoti, userId));
     });
     return result;
 }
 //Obtener una notificación para enviar a un usuario online
-module.exports.GetSentNotificationByUser = (idNotiUser) => {
+module.exports.GetNotificationModelFromIdNotiUser = (idNotiUser) => {
     let sentNoti = CacheSentNotificationsUser[idNotiUser];
     if (sentNoti != null){
         let newNoti = CacheNotification[sentNoti.IdNotification];
-        let result = ({...newNoti,
-                        ReadingDate: sentNoti.ReadingDate,
-                        SentDate: sentNoti.SentDate});
-        return result;
+        return this.GetNotificationModelForUser(newNoti, sentNoti);
     }
     return null;
 }
@@ -104,9 +145,7 @@ module.exports.GetAllNotificationsByUser = (userId) => {
     let tagIds = this.GetUserTags(userId);
     let allNotis = this.GetAllNotifications()
         .filter(noti => tagIds.includes(noti.IdTag));
-    allNotis = allNotis.map(noti => ({...noti,
-                                    ReadingDate: GetReadingDate(noti.Id, userId),
-                                    SentDate: GetSentDate(noti.Id, userId)}))
+    allNotis = allNotis.map(noti => this.GetNotificationModelForUser(noti, userId));
     return allNotis;
 }
 //Obtener todas las notificaciones enviadas
@@ -129,42 +168,31 @@ module.exports.GetNoDuplicateSentNotificationIds = () => {
     return [...new Set(sentNotifications)];
 }//TODO: hacer const
 
-
-
-module.exports.GetNotificationByUser = async (userId, notiId) => {
-    if (CacheNotification[notiId] != null){
-        let copyNoti = {...CacheNotification[notiId]};
-        let status = await CheckReadingDateNotification(userId, notiId);//TODO: revisar
-        copyNoti.ReadingDate = status;
-        return copyNoti;
-    }
-    return null;
-}
 module.exports.GetUser = (id) => {
     if (id in CacheUser) return CacheUser[id];
     return null;
 }
 
+/**
+ * The function is responsible for saving in cache and in DB
+ */
+module.exports.ChangeReadingDateOfANotificationAsync = async (idNotiUser) => {
+    let notiUser = CacheSentNotificationsUser[idNotiUser];
+
+    if (notiUser == null) return;// Should't happen
+
+    //update cache
+    notiUser.ReadingDate = notiUser.ReadingDate == null ? tools.DateNow() : null;
+
+    //update DB
+    return await NotificationUser.createOrUpdate(notiUser);
+}
 module.exports.UpdateNotificationUserAsync = async (userId, notiId, readingDate = null) => {
     let newNotificationUser = await NotificationUser.createOrUpdate(userId, notiId, readingDate);
     CacheSentNotificationsUser[newNotificationUser.Id] = newNotificationUser;
     return newNotificationUser;
-}
+}//TODO: Ver de eliminar
 
-
-/**
- * this function will populate the NotificationUser table as it is called
- * @returns null if it doesn't exists, and the ReadingDate if it exists
- */
-const CheckReadingDateNotification = async (userId, notiId) => {
-    let status = Object.values(CacheSentNotificationsUser)
-        .find(item => item.IdUser == userId && item.IdNotification == notiId);
-    if (status == null){
-        await this.UpdateNotificationUserAsync(userId, notiId);
-        return null;
-    }
-    return status.ReadingDate;
-}
 
 //TODO Sacar el obj de export y pasar como parámetro la función y eventype
 EventEmitter.obj.on(EventEmitter.EventTypes.NotificationCreated,

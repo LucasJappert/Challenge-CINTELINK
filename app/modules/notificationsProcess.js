@@ -9,17 +9,19 @@ const NotificationsProcess = async () => {
         for (let i = 0; i < unsentNotis.length; i++) {
             const noti = unsentNotis[i];
             if (noti.DateToSend < tools.now()){//TODO: Revisar
-                console.log(`Notificación por enviar: --> ${noti.Id}`);
+                console.log(`Notificación lista para enviar: --> ${noti.Id}`);
                 let usersId = DataManager.GetUsersIdSubscribedToATag(noti.IdTag);
                 for (let n = 0; n < usersId.length; n++) {
                     const userId = usersId[n];
                     //Save in DB
-                    let newNotiUser = await NotificationUser.createOrUpdate(userId, noti.Id);
+                    let newObj = NotificationUser.GetNewObject(userId, noti.Id);
+                    let newNotiUser = await NotificationUser.createOrUpdate(newObj);
                     //Save in cache
                     DataManager.SaveCacheSentNotificationsUser(newNotiUser);
+
+                    let newNoti = DataManager.GetNotificationModelFromIdNotiUser(newNotiUser.Id);
                     //Notification to online users goes to EventEmmiter(Check UserManager file)
-                    let newNoti = DataManager.GetSentNotificationByUser(newNotiUser.Id);
-                    EventEmitter.SendNotificationToOnlineUsers(newNoti);
+                    EventEmitter.SendNotificationToOnlineUser(newNoti);
                 }
             }
         }

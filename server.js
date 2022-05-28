@@ -10,19 +10,21 @@ const server = http.createServer(app);
 require("./app/routes/user.routes")(app);
 require("./app/routes/tag.routes")(app);
 require("./app/routes/notification.routes")(app);
+require("./app/routes/notificationUser.routes")(app);
+require("./app/routes/userTag.routes")(app);
 
 //process.env.TZ = "America/Argentina/Buenos_Aires";
 
 
 server.listen(port, async () => {
     Log.BgGreen(`Servidor corriendo en http://localhost:${port}`);
+
+    const DataManager = require("./app/services/dataManager");
+    (async () => {
+        await DataManager.InitializeCache();
+        require("./app/services/socketManager")(server);
+        NotificationsProcess.StartProcess();
+    })()
 });
 
-const DataManager = require("./app/services/dataManager");
-(async () => {
-    await DataManager.InitializeCache();
-    require("./app/services/notificationManager");
-    require("./app/services/socketManager")(server);
-    NotificationsProcess.StartProcess();
-})()
 

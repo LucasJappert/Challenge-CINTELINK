@@ -4,11 +4,16 @@ module.exports.log = (...params) => {
     });
 }
 const hoursDifference = -3;
+const auxMiliseconds = hoursDifference * 60 * 60 * 1000;
 module.exports.now = () => {
     let now = new Date();
-    return now.setTime(now.getTime() + (hoursDifference * 60 * 60 * 1000));
+    return now.setTime(now.getTime() + auxMiliseconds);
+}
+module.exports.DateNow = () => {
+    let now = new Date();
+    return new Date(now.setTime(now.getTime() + auxMiliseconds));
 }
 module.exports.ConvertToArgDate = (stringDate) => {
     let aux = new Date(stringDate);
-    return new Date(aux.getTime() + (hoursDifference * 60 * 60 * 1000));
+    return new Date(aux.getTime() + auxMiliseconds);
 }

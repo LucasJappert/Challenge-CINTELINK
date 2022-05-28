@@ -1,11 +1,11 @@
 <template>
     <div>
         <Header></Header>
-        <div class="tableContainer" v-if="showAllNotifications">
+        <div class="tableContainer" v-if="$store.getters['notifications/showAllNotifications']">
             <br /><br />
             <div class="Titulo1">
                 - Estas son todas tus notificaciones:
-                <span class="fa fa-times btnIcon Close" @click="showAllNotifications = false"></span>
+                <span class="fa fa-times btnIcon Close" @click="$store.dispatch('notifications/invertShowAllNotifications')"></span>
             </div>
             <div class="row header rowNotification">
                 <div>#</div>
@@ -19,7 +19,9 @@
                 <div>{{ noti.IdTag }}</div>
                 <div>{{ noti.Message }}</div>
                 <div>{{ GetDDMMYYYYHHMMSSFormat(noti.ReadingDate) }}</div>
-                <div class="aliCenter"><i class="fa fa-trash"></i></div>
+                <div class="aliCenter">
+                    <i class="fa fa-trash" @click="DeleteNotificationUserAsync(noti)"></i>
+                </div>
             </div>
         </div>
 
@@ -81,6 +83,7 @@ export default {
 
         // this.myNotifications = await api.GetNotifications(this.getUserId);
         let result = await api.GetNotifications(this.getUserId);
+        console.log(result);
         this.$store.dispatch("notifications/setNotifications", result);
     },
     async mounted() {
@@ -96,6 +99,10 @@ export default {
             if (data.newNotification != null) {
                 this.$store.dispatch("notifications/addNotification", data.newNotification);
             }
+            if (data.notificationUserRemoved != null) {
+                console.log("Notificación eliminada!", data.notificationUserRemoved);
+                this.$store.dispatch("notifications/removeNotification", data.notificationUserRemoved);
+            }
         });
     },
     methods:{
@@ -103,8 +110,10 @@ export default {
             if (date == null) return "";
             return date.toDDMMYYYYHHMMSS();
         },
-    },
-    computed: {
+        async DeleteNotificationUserAsync(noti){
+            let result = await api.DeleteNotificationUserAsync(noti.IdNotiUser);
+            console.log(result); //La notificación se eliminará de la vista a traves de un mensaje por socket
+        },
     },
     beforeUnmount() {
         SocketioService.Disconnect();

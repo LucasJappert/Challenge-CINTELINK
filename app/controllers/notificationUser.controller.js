@@ -1,25 +1,21 @@
 const NotificationUser = require("../models/NotificationUser.model");
 const { ObjectResult } = require('../helpers/objectResult');
+const DataManager = require("../services/dataManager");
 
-exports.update = async (req, res) => {
+exports.delete = async (req, res) => {
     // TODO: VALIDATOR
     if (req.body == null) {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
     }
-    if (req.params.iduser == null) {
+    if (req.params.id == null) {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
     }
 
-    const notificationUser = new NotificationUser({
-        IdNotification: req.body.IdNotification,
-        IdUser: req.params.iduser,
-        ReadingDate: req.body.ReadingDate,
-        CanceledDate: req.body.CanceledDate
-    });
-    let result = await NotificationUser.createOrUpdate(notificationUser);
+    let result = await DataManager.RemoveSentNotificationUserAsync(req.params.id);
 
     if (result == null)
         ObjectResult.SendInternalServer(res);
     else
         ObjectResult.SendOk(res, result);
 };
+

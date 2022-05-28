@@ -8,18 +8,23 @@ module.exports.NotificationCreated = (newNoti) => {
     EMITTER.emit(this.EventTypes.NotificationCreated, newNoti);
 }
 module.exports.EmitNotificationRemoved = (idNoti) => {
-    console.log(`notificacion eliminada! ${idNoti}`);
+    console.log(`NotificationRemoved! ${idNoti}`);
     EMITTER.emit(this.EventTypes.NotificationRemoved, idNoti);
 }
-module.exports.SendNotificationToOnlineUsers = (newNoti) => {
-    console.log(`NotificationUser creada o actualizada! ${newNoti.Id}`);
-    EMITTER.emit(this.EventTypes.SendNotificationToOnlineUsers, newNoti);
+module.exports.SendNotificationToOnlineUser = (newNoti) => {
+    console.log(`NotificationUser creada o actualizada! ${newNoti.IdNotiUser}`);
+    EMITTER.emit(this.EventTypes.SendNotificationToOnlineUser, newNoti);
+}
+module.exports.EmitNotificationUserRemoved = (notiUser) => {
+    console.log(`NotificationUserRemoved! ${notiUser.Id}`);
+    EMITTER.emit(this.EventTypes.NotificationUserRemoved, notiUser);
 }
 
 module.exports.EventTypes = Object.freeze({
     NotificationCreated: "NotificationCreated",
     NotificationRemoved: "NotificationRemoved",
-    SendNotificationToOnlineUsers: "SendNotificationToOnlineUsers"
+    SendNotificationToOnlineUser: "SendNotificationToOnlineUser",
+    NotificationUserRemoved: "NotificationUserRemoved"
 });
 
 //module.exports = MyEventEmitter;

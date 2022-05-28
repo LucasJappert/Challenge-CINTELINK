@@ -50,7 +50,7 @@ exports.delete = async (req, res) => {
     let sentNotificationsIds = DataManager.GetNoDuplicateSentNotificationIds();
 
     if(sentNotificationsIds.includes(Number(req.params.id))){
-        ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
+        ObjectResult.SendBadRequest(res, { message: "The notification was already sent and it cant be removed!"});
     }else{
         DataManager.RemoveCacheNotification(req.params.id);
         let result = await Notification.delete(req.params.id);

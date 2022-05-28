@@ -16,7 +16,7 @@ User.getAll = async () => {
     try {
         let pool = await MSSQL.connect(sqlConn);
         let q = `SELECT Id, Nick, Pass, Rol, CreationDate, CanceledDate
-                    FROM [User]`;
+                    FROM [User] WHERE CanceledDate IS NULL`;
         let data = await pool
             .request()
             .query(q);

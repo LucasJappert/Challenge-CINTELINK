@@ -15,7 +15,7 @@ UserTag.getAll = async () => {
     try {
         let pool = await MSSQL.connect(sqlConn);
         let q = `SELECT Id, IdUser, IdTag, CreationDate, CanceledDate
-                    FROM [UserTag]`;
+                    FROM [UserTag] WHERE CanceledDate IS NULL`;
         let data = await pool
             .request()
             .query(q);

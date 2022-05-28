@@ -30,7 +30,7 @@ Notification.getAll = async () => {
     try {
         let pool = await MSSQL.connect(sqlConn);
         let q = `SELECT Id, Title, Message, IdTag, DateToSend, CreationDate, CanceledDate
-                    FROM [Notification]`;
+                    FROM [Notification] WHERE CanceledDate IS NULL`;
         let data = await pool
             .request()
             .query(q);
@@ -70,8 +70,8 @@ Notification.create = async (notification) => {
         data.recordset.forEach(row => {
             result = new Notification(row);
         });
-        let newNoti = {...result, ReadingDate: null};//TODO: El ReadingDate no haría falta acá
-        EventEmitter.NotificationCreated(newNoti);
+
+        EventEmitter.NotificationCreated(result);
     } catch (error) {
         Log.Red(error);
     }
