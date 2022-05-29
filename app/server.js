@@ -1,4 +1,3 @@
-
 const Log = require("./utils/log");
 const app = require("./app");
 const http = require("http");
@@ -12,7 +11,6 @@ require("./routes/tag.routes")(app);
 require("./routes/notification.routes")(app);
 require("./routes/notificationUser.routes")(app);
 require("./routes/userTag.routes")(app);
-
 
 server.listen(port, async () => {
 
