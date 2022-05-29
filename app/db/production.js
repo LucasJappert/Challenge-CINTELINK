@@ -1,3 +1,3 @@
 module.exports = {
-    //TODO: Complete
+    //TODO: Fill using prod variables
 };

@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-//TODO: llevar a otro archivo
+
 const EMITTER = new EventEmitter();
 
 module.exports.obj = EMITTER;
@@ -26,5 +26,3 @@ module.exports.EventTypes = Object.freeze({
     SendNotificationToOnlineUser: "SendNotificationToOnlineUser",
     NotificationUserRemoved: "NotificationUserRemoved"
 });
-
-//module.exports = MyEventEmitter;

@@ -37,8 +37,7 @@ Notification.getAll = async () => {
 Notification.create = async (notification) => {
     let result = null;
     try {
-        console.log(notification.DateToSend);
-        const fixedDate = ConvertToArgDate(notification.DateToSend);//TODO: Revisar todas estas fechas
+        const fixedDate = ConvertToArgDate(notification.DateToSend);
         let pool = await MSSQL.connect(sqlConn);
         let q = `
             INSERT INTO [Notification] (Title, [Message], IdTag, DateToSend)
@@ -74,7 +73,6 @@ Notification.delete = async (idNotification) => {
             .request()
             .input('Id', MSSQL.Int, idNotification)
             .query(q);
-        //pool.close();//TODO: Ver de cerrar de esta manera.
         pool.close();
         result = idNotification;
         EventEmitter.EmitNotificationRemoved(idNotification);

@@ -13,7 +13,6 @@ exports.create = async (req, res) => {
         return;
     }
 
-    //TODO: Chequear en cache si ya existe
     const notification = new Notification(req.body);
     let result = await Notification.create(notification);
 

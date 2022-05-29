@@ -30,7 +30,6 @@
                 <div>{{ noti.Message }}</div>
                 <div>{{ noti.DateToSend.toDDMMYYYYHHMMSS() }}</div>
                 <div class="aliCenter">
-                    <!-- TODO: mostrar solamente si la notificación aún no se envió -->
                     <i class="fa fa-trash" @click="RemoveNotificationAsync(noti.Id)" v-if="allowDelete(noti)"></i>
                 </div>
             </div>

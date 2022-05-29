@@ -18,7 +18,9 @@ User.getAll = async () => {
         let data = await pool
             .request()
             .query(q);
-        pool.close();//FIXME: Ver error Cannot close a pool while it is connecting
+        pool.close();
+        //FIXME: Ver error: "Cannot close a pool while it is connecting..."
+        //Pasaba antes con el MSSQL.close. Verificar que ahora funcione ok, incluso ante muchas peticiones.
 
         data.recordset.forEach(row => {
             result[row.Id] = {
