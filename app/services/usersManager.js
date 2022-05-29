@@ -12,29 +12,26 @@ class UserSocket {
         this.user = null;
         this.socket = socket;
         this.socket.on("message", (data) => {
-            this.ProcessMessageAsync(data);
+            this.#ProcessMessageAsync(data);
         });
-        this.SendMessageAsync({
+        this.#SendMessageAsync({
             message: `Hola ${socket.id}!`,
             newConnection: socket.id
          });
 
-         //TODO Sacar el obj de export y pasar como parámetro la función y eventype
         EventEmitter.obj.on(EventEmitter.EventTypes.SendNotificationToOnlineUser, (newNoti) => {
-            this.SendNotificationToOnlineUserEvent(newNoti)
+            this.#SendNotificationToOnlineUserEvent(newNoti)
         });
-        //TODO Sacar el obj de export y pasar como parámetro la función y eventype
         EventEmitter.obj.on(EventEmitter.EventTypes.NotificationUserRemoved, (notiUser) => {
-            this.EventNotificationUserRemoved(notiUser)
+            this.#EventNotificationUserRemoved(notiUser)
         });
 
     }
 
-    async SendMessageAsync(json) {
+    async #SendMessageAsync(json) {
         this.socket.emit("message", json);
     }
-    //TODO: Ver de hacer privado
-    async ProcessMessageAsync(json) {
+    async #ProcessMessageAsync(json) {
         if(json.message != null){
             console.error(json.message);
         }
@@ -44,7 +41,7 @@ class UserSocket {
 
             await CacheManager.ChangeReadingDateOfANotificationAsync(idNotiUser);
             let updatedNoti = CacheManager.GetNotificationModelFromIdNotiUser(idNotiUser);
-            this.SendMessageAsync({ newNotification: updatedNoti});
+            this.#SendMessageAsync({ newNotification: updatedNoti});
         }
         if(json.loggedUser != null){
             console.log(`Usuario logueado! ${json.loggedUser.Id}`);
@@ -54,26 +51,24 @@ class UserSocket {
     Initialize(user){
         this.user = user;
         if (this.user == null) return;
-
-        this.user.tags = CacheManager.GetUserTagsId(this.user.Id);//TODO: Eliminar
     }
-    SendNotificationToOnlineUserEvent(newNoti){
+    #SendNotificationToOnlineUserEvent(newNoti){
         if (this.user == null) {//Should't happen
             this.socket.disconnect();
             return;
         }
         const tagsId = CacheManager.GetUserTagsId(this.user.Id);
         if (tagsId.includes(newNoti.IdTag)){
-            this.SendMessageAsync({ newNotification: newNoti});
+            this.#SendMessageAsync({ newNotification: newNoti});
         }
     }
-    EventNotificationUserRemoved(notiUser){
+    #EventNotificationUserRemoved(notiUser){
         if (this.user == null) {//Should't happen
             this.socket.disconnect();
             return;
         }
         if (this.user.Id == notiUser.IdUser){
-            this.SendMessageAsync({ notificationUserRemoved: notiUser});
+            this.#SendMessageAsync({ notificationUserRemoved: notiUser});
         }
     }
 

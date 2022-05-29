@@ -9,9 +9,6 @@ const tools = require("../utils/tools");
 let CacheNotification, CacheSentNotificationsUser, CacheTag, CacheUser, CacheUserTag = [{}, {}, {}, {}, {}];
 
 let LoadingsOk = false;
-module.exports.GetLoadingsOk = () => {
-    return LoadingsOk;
-};
 module.exports.InitializeCache = async() => {//TODO: Que los métodos async terminen con Async
     CacheNotification = await Notification.getAll();
     CacheSentNotificationsUser = await NotificationUser.getAll();
@@ -22,67 +19,6 @@ module.exports.InitializeCache = async() => {//TODO: Que los métodos async term
 }
 
 //#region GETTERS
-module.exports.GetCacheNotificationUser = (idNotification, userId) => {
-    let result = Object.values(CacheSentNotificationsUser)
-            .find(item => item.IdUser == userId && item.IdNotification == idNotification);
-    return result;
-}
-module.exports.GetCacheNotificationById = (id) => {
-    return CacheNotification[id];
-}
-module.exports.GetCacheNotificationUserById = (id) => {
-    return CacheSentNotificationsUser[id];
-}
-//#endregion ------------------------------
-
-//#region SETTERS
-module.exports.RemoveCacheNotification = (idNotification) => {
-    delete CacheNotification[idNotification];
-}
-module.exports.SaveCacheSentNotificationsUser = (newRecord) => {
-    if (newRecord == null){
-        return false;//Should't happen
-    }
-    CacheSentNotificationsUser[newRecord.Id] = newRecord;
-    return true;
-}
-module.exports.UpdateCacheUserTag = (newRecord) => {
-    if (newRecord == null){
-        return false;//Should't happen
-    }
-
-    if (newRecord.CanceledDate != null)
-        delete CacheUserTag[newRecord.Id];
-    else
-        CacheUserTag[newRecord.Id] = newRecord;
-
-    return true;
-}
-/**
- * The function is responsible for saving in cache and in DB
- */
-module.exports.RemoveSentNotificationUserAsync = async (idNotiUser) => {
-    let notiUser = CacheSentNotificationsUser[idNotiUser];
-
-    if (notiUser == null) return;// Should't happen
-
-    //update cache
-    notiUser.CanceledDate = tools.DateNow();
-
-    //update DB
-    let result = await NotificationUser.createOrUpdate(notiUser);
-    //Notify to user
-    EventEmitter.EmitNotificationUserRemoved(result);
-    //Remove cache
-    delete CacheSentNotificationsUser[idNotiUser];
-    return result;
-}
-module.exports.RemoveCacheUserTag = (id) => {
-    delete CacheUserTag[id];
-}
-//#endregion ------------------------------
-
-
 const GetReadingDate = (notificationId, userId) => {
     let result = this.GetCacheNotificationUser(notificationId, userId);
     return result ? result.ReadingDate : null;
@@ -94,6 +30,24 @@ const GetSentDate = (notificationId, userId) => {
 const GetIdNotiUser = (notificationId, userId) => {
     let result = this.GetCacheNotificationUser(notificationId, userId);
     return result ? result.Id : null;
+}
+module.exports.GetLoadingsOk = () => {
+    return LoadingsOk;
+};
+module.exports.GetCacheNotificationUser = (idNotification, userId) => {
+    let result = Object.values(CacheSentNotificationsUser)
+            .find(item => item.IdUser == userId && item.IdNotification == idNotification);
+    return result;
+}
+module.exports.GetCacheNotificationById = (id) => {
+    return CacheNotification[id];
+}
+module.exports.GetCacheNotificationUserById = (id) => {
+    return CacheSentNotificationsUser[id];
+}
+module.exports.GetUser = (id) => {
+    if (id in CacheUser) return CacheUser[id];
+    return null;
 }
 /**
  * obj param can be a NotificationUser or an userId
@@ -142,7 +96,6 @@ module.exports.GetAllTags = () => {
     if (!this.LoadingsOk) return [];
     return Object.values(CacheTag);
 }
-
 //Obtener todas las notificaciones
 module.exports.GetAllNotifications = () => {
     if (!this.LoadingsOk) return;
@@ -197,11 +150,57 @@ module.exports.GetNoDuplicateSentNotificationIds = () => {
                         .map(noti => noti.IdNotification);
     return [...new Set(sentNotifications)];
 }//TODO: hacer const
+//#endregion ------------------------------
 
-module.exports.GetUser = (id) => {
-    if (id in CacheUser) return CacheUser[id];
-    return null;
+//#region SETTERS
+module.exports.RemoveCacheNotification = (idNotification) => {
+    delete CacheNotification[idNotification];
 }
+module.exports.SaveCacheSentNotificationsUser = (newRecord) => {
+    if (newRecord == null){
+        return false;//Should't happen
+    }
+    CacheSentNotificationsUser[newRecord.Id] = newRecord;
+    return true;
+}
+module.exports.UpdateCacheUserTag = (newRecord) => {
+    if (newRecord == null){
+        return false;//Should't happen
+    }
+
+    if (newRecord.CanceledDate != null)
+        delete CacheUserTag[newRecord.Id];
+    else
+        CacheUserTag[newRecord.Id] = newRecord;
+
+    return true;
+}
+/**
+ * The function is responsible for saving in cache and in DB
+ */
+module.exports.RemoveSentNotificationUserAsync = async (idNotiUser) => {
+    let notiUser = CacheSentNotificationsUser[idNotiUser];
+
+    if (notiUser == null) return;// Should't happen
+
+    //update cache
+    notiUser.CanceledDate = tools.DateNow();
+
+    //update DB
+    let result = await NotificationUser.createOrUpdate(notiUser);
+    //Notify to user
+    EventEmitter.EmitNotificationUserRemoved(result);
+    //Remove cache
+    delete CacheSentNotificationsUser[idNotiUser];
+    return result;
+}
+module.exports.RemoveCacheUserTag = (id) => {
+    delete CacheUserTag[id];
+}
+//#endregion ------------------------------
+
+
+
 
 /**
  * The function is responsible for saving in cache and in DB
@@ -224,8 +223,10 @@ module.exports.UpdateNotificationUserAsync = async (userId, notiId, readingDate 
 }//TODO: Ver de eliminar
 
 
-//TODO Sacar el obj de export y pasar como parámetro la función y eventype
+
+//#region EVENTs
 EventEmitter.obj.on(EventEmitter.EventTypes.NotificationCreated,
                     (newNoti) => CacheNotification[newNoti.Id] = newNoti);
+//#endregion ------------------------------
 
 

@@ -52,19 +52,19 @@ exports.delete = async (req, res) => {
         return;
     }
 
-    //TODO: Chequear en cache si ya existe
     let sentNotificationsIds = CacheManager.GetNoDuplicateSentNotificationIds();
 
     if(sentNotificationsIds.includes(Number(req.params.id))){
         ObjectResult.SendBadRequest(res, { message: "The notification was already sent and it cant be removed!"});
-    }else{
-        CacheManager.RemoveCacheNotification(req.params.id);
-        let result = await Notification.delete(req.params.id);
-        if (result > 0)
-            ObjectResult.SendOk(res, {});
-        else
-            ObjectResult.SendInternalServer(res);
+        return;
     }
+
+    CacheManager.RemoveCacheNotification(req.params.id);
+    let result = await Notification.delete(req.params.id);
+    if (result > 0)
+        ObjectResult.SendOk(res, {});
+    else
+        ObjectResult.SendInternalServer(res);
 };
 
 exports.validate = (method) => {
