@@ -18,7 +18,7 @@ User.getAll = async () => {
         let data = await pool
             .request()
             .query(q);
-        MSSQL.close();//FIXME: Ver error Cannot close a pool while it is connecting
+        pool.close();//FIXME: Ver error Cannot close a pool while it is connecting
 
         data.recordset.forEach(row => {
             result[row.Id] = {
@@ -52,7 +52,7 @@ User.create = async (user) => {
             .request()
             .input('Nick', MSSQL.VarChar, user.Nick)
             .query(q);
-        MSSQL.close();
+        pool.close();
 
         data.recordset.forEach(row => {
             result = {

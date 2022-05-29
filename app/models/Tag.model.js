@@ -16,7 +16,7 @@ Tag.getAll = async () => {
         let data = await pool
             .request()
             .query(q);
-        MSSQL.close();
+        pool.close();
 
         data.recordset.forEach(row => {
             result[row.Id] = new Tag(row)

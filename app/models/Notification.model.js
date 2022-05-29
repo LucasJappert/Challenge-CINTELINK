@@ -23,7 +23,7 @@ Notification.getAll = async () => {
         let data = await pool
             .request()
             .query(q);
-        MSSQL.close();
+        pool.close();
 
         data.recordset.forEach(row => {
             result[row.Id] = new Notification(row);
@@ -53,8 +53,7 @@ Notification.create = async (notification) => {
             .input('IdTag', MSSQL.Int, notification.IdTag)
             .input('DateToSend', MSSQL.DateTime, fixedDate)
             .query(q);
-        //pool.close();//TODO: Ver de cerrar de esta manera.
-        MSSQL.close();
+        pool.close();
 
         data.recordset.forEach(row => {
             result = new Notification(row);
@@ -76,7 +75,7 @@ Notification.delete = async (idNotification) => {
             .input('Id', MSSQL.Int, idNotification)
             .query(q);
         //pool.close();//TODO: Ver de cerrar de esta manera.
-        MSSQL.close();
+        pool.close();
         result = idNotification;
         EventEmitter.EmitNotificationRemoved(idNotification);
     } catch (error) {

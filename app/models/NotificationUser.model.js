@@ -26,7 +26,7 @@ NotificationUser.getAll = async () => {
         let data = await pool
             .request()
             .query(q);
-        MSSQL.close();
+        pool.close();
 
         data.recordset.forEach(row => {
             result[row.Id] = new NotificationUser(row)
@@ -70,7 +70,7 @@ NotificationUser.createOrUpdate = async (notiUser) => {
             .input('IdUser', MSSQL.Int, notiUser.IdUser)
             .input('CanceledDate', MSSQL.DateTime, notiUser.CanceledDate)
             .query(q);
-        MSSQL.close();
+        pool.close();
 
         data.recordset.forEach(row => {
             result = new NotificationUser(row)

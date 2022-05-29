@@ -24,7 +24,7 @@ UserTag.getAll = async () => {
         let data = await pool
             .request()
             .query(q);
-        MSSQL.close();
+        pool.close();
 
         data.recordset.forEach(row => {
             result[row.Id] = new UserTag(row)
@@ -66,7 +66,7 @@ UserTag.createOrUpdate = async (userTag) => {
             .input('IdTag', MSSQL.Int, userTag.IdTag)
             .input('CanceledDate', MSSQL.DateTime, userTag.CanceledDate)
             .query(q);
-        MSSQL.close();
+        pool.close();
 
         data.recordset.forEach(row => {
             result = new UserTag(row)
