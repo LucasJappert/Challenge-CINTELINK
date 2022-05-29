@@ -1,7 +1,7 @@
 module.exports = app => {
     const notification = require("../controllers/notification.controller");
 
-    app.post("/api/notification", notification.create);
+    app.post("/api/notification", notification.validate('create'), notification.create);
 
     app.get("/api/notifications", notification.getAll);
 

@@ -4,7 +4,7 @@ const NotificationUser = require("../models/NotificationUser.model");
 const EventEmitter = require("../helpers/eventEmitter");
 
 const NotificationsProcess = async () => {
-    if (CacheManager.LoadingsOk) {
+    if (CacheManager.GetLoadingsOk()) {
         let unsentNotis = CacheManager.GetUnsentNotifications();
         for (let i = 0; i < unsentNotis.length; i++) {
             const noti = unsentNotis[i];

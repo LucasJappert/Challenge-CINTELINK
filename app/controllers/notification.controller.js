@@ -1,12 +1,16 @@
 const Notification = require("../models/Notification.model");
-const { ObjectResult } = require('../helpers/objectResult');
+const { ObjectResult } = require("../helpers/objectResult");
 const CacheManager = require("../services/cacheManager");
-
+const { body, validationResult } = require('express-validator');
 
 exports.create = async (req, res) => {
-    // TODO: VALIDATOR
-    if (req.body == null) {
-        ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        ObjectResult.SendBadRequest(res, {
+            message: "Invalid parameters!",
+            errors: errors.array()
+        });
+        return;
     }
 
     //TODO: Chequear en cache si ya existe
@@ -22,6 +26,7 @@ exports.create = async (req, res) => {
 exports.getByUser = async (req, res) => {
     if (req.params.iduser == null) {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
+        return;
     }
     let notifications = await CacheManager.GetAllNotificationsByUser(req.params.iduser);
     ObjectResult.SendOk(res, notifications);
@@ -29,6 +34,7 @@ exports.getByUser = async (req, res) => {
 exports.getByUserFilterSent = async (req, res) => {
     if (req.params.iduser == null) {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
+        return;
     }
     let notifications = await CacheManager.GetSentNotificationsByUser(req.params.iduser);
     ObjectResult.SendOk(res, notifications);
@@ -41,9 +47,9 @@ exports.getAll = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-    // TODO: VALIDATOR
     if (req.params.id == null) {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
+        return;
     }
 
     //TODO: Chequear en cache si ya existe
@@ -60,3 +66,16 @@ exports.delete = async (req, res) => {
             ObjectResult.SendInternalServer(res);
     }
 };
+
+exports.validate = (method) => {
+    switch (method) {
+        case "create": {
+            return [
+                body("Title", "Title doesn't exists").exists(),
+                body("Message", "Invalid email").exists(),
+                body("IdTag").exists().isInt(),
+                body("DateToSend").exists()
+            ]
+        }
+    }
+}

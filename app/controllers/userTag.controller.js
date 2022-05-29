@@ -6,6 +6,7 @@ exports.getAll = async (req, res) => {
 
     if (req.params.iduser == null) {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
+        return;
     }
     let userTags = CacheManager.GetUserTags(req.params.iduser);
 
@@ -13,11 +14,7 @@ exports.getAll = async (req, res) => {
     ObjectResult.SendOk(res, result);
 };
 exports.update = async (req, res) => {
-    if (req.params.iduser == null) {
-        ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
-        return;
-    }
-    if (req.params.idtag == null) {
+    if (req.params.iduser == null || req.params.idtag == null) {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
         return;
     }

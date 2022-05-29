@@ -8,7 +8,10 @@ const tools = require("../utils/tools");
 
 let CacheNotification, CacheSentNotificationsUser, CacheTag, CacheUser, CacheUserTag = [{}, {}, {}, {}, {}];
 
-module.exports.LoadingsOk = false;
+let LoadingsOk = false;
+module.exports.GetLoadingsOk = () => {
+    return LoadingsOk;
+};
 module.exports.InitializeCache = async() => {//TODO: Que los métodos async terminen con Async
     CacheNotification = await Notification.getAll();
     CacheSentNotificationsUser = await NotificationUser.getAll();
@@ -136,7 +139,7 @@ module.exports.GetUserTagsId = (userId) => {
 
 //Obtener todos los tags
 module.exports.GetAllTags = () => {
-    if (!this.LoadingsOk) return;
+    if (!this.LoadingsOk) return [];
     return Object.values(CacheTag);
 }
 

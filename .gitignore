@@ -35,3 +35,13 @@ node_modules
 .VSCodeCounter/2022-05-28_15-51-38/results.json
 .VSCodeCounter/2022-05-28_15-51-38/results.md
 .VSCodeCounter/2022-05-28_15-51-38/results.txt
+app/dist/app.js
+app/dist/controllers/notification.controller.js
+app/dist/controllers/notificationUser.controller.js
+app/dist/controllers/tag.controller.js
+app/dist/controllers/user.controller.js
+app/dist/controllers/userTag.controller.js
+app/dist/db/development.js
+app/dist/db/production.js
+app/dist/db/sqlConn.js
+app/dist/helpers/eventEmitter.js
