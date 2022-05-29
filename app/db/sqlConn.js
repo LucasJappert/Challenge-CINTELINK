@@ -1,6 +1,5 @@
 const Log = require('../utils/log');
 
-
 const ISDEV = process.env.NODE_ENV == "development";
 const sqlConn = ISDEV ? require("./development") : require("./production");
 

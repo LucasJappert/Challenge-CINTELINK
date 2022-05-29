@@ -45,3 +45,4 @@ app/dist/db/development.js
 app/dist/db/production.js
 app/dist/db/sqlConn.js
 app/dist/helpers/eventEmitter.js
+app/logs/api.log

@@ -1,4 +1,24 @@
 const colors = require('colors');
+
+var Logger = require('bunyan');
+const pkg = require("../package.json");
+module.exports.Bunyan = new Logger({
+  name: pkg.name,
+  streams: [
+    // {
+    //     stream: process.stdout,
+    //     level: 'debug'
+    // },
+    {
+      path: 'logs/api.log',
+      level: 'trace'
+    }
+  ],
+  serializers: {
+    req: Logger.stdSerializers.req
+  },
+});
+
 module.exports.Red = (...params) => {
     params.forEach(el => {
         console.log(colors.red(el));

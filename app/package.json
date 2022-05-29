@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon app/server.js",
+    "dev": "nodemon app/server.js | bunyan",
     "start": "node dist/server.js",
     "tests": "jest --verbose --silent",
     "tests:watch": "npm run test -- --watch",
@@ -13,6 +13,7 @@
   "author": "Lucas Jappert",
   "license": "ISC",
   "dependencies": {
+    "bunyan": "^1.8.15",
     "colors": "^1.4.0",
     "dotenv": "^16.0.1",
     "express": "^4.17.1",
