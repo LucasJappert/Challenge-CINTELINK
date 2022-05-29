@@ -1,11 +1,11 @@
 
-//jest.mock('../services/dataManager');
-const DataManager = require("../services/dataManager");
-describe("---------> Tests DataManager", () => {
-    jest.spyOn(DataManager, 'GetAllTags').mockReturnValue(22222);
+//jest.mock('../services/cacheManager');
+const CacheManager = require("../services/cacheManager");
+describe("---------> Tests CacheManager", () => {
+    jest.spyOn(CacheManager, 'GetAllTags').mockReturnValue(22222);
     test("Testing", () => {
-        //DataManager.GetAllTags.functionToMock = jest.fn().mockReturnValue(2323);
-        let result = DataManager.GetAllTags();
+        //CacheManager.GetAllTags.functionToMock = jest.fn().mockReturnValue(2323);
+        let result = CacheManager.GetAllTags();
         console.log(result);
         expect(1).toBe(1);
     })

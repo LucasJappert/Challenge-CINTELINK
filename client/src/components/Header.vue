@@ -2,7 +2,7 @@
     <div>
         <header>
             <router-link class="fa fasLeft fa-arrow-circle-left" :to="{ name: 'Login' }"></router-link>
-            <div class="divNickName">{{ getNickName }}</div>
+            <div v-if="loggedUser != null" class="divNickName">{{ getNickName }}</div>
 
             <div class="notBtn" v-if="!rolAdmin">
                 <div class="number unreadNotifications" v-if="unreadNotifications.length > 0">

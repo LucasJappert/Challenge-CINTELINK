@@ -19,9 +19,9 @@ require("./app/routes/userTag.routes")(app);
 server.listen(port, async () => {
     Log.BgGreen(`Servidor corriendo en http://localhost:${port}`);
 
-    const DataManager = require("./app/services/dataManager");
+    const CacheManager = require("./app/services/cacheManager");
     (async () => {
-        await DataManager.InitializeCache();
+        await CacheManager.InitializeCache();
         require("./app/services/socketManager")(server);
         NotificationsProcess.StartProcess();
     })()

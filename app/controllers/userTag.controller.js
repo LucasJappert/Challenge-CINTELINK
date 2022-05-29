@@ -1,5 +1,5 @@
 const { ObjectResult } = require('../helpers/objectResult');
-const DataManager = require("../services/dataManager");
+const CacheManager = require("../services/cacheManager");
 const UserTag = require("../models/UserTag.model");
 
 exports.getAll = async (req, res) => {
@@ -7,7 +7,7 @@ exports.getAll = async (req, res) => {
     if (req.params.iduser == null) {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
     }
-    let userTags = DataManager.GetUserTags(req.params.iduser);
+    let userTags = CacheManager.GetUserTags(req.params.iduser);
 
     let result = userTags.map(item => ({ Id: item.Id, IdTag: item.IdTag}));
     ObjectResult.SendOk(res, result);
@@ -22,7 +22,7 @@ exports.update = async (req, res) => {
         return;
     }
 
-    let userTag = DataManager.GetUserTag(req.params.iduser, req.params.idtag);
+    let userTag = CacheManager.GetUserTag(req.params.iduser, req.params.idtag);
     if (userTag == null){
         userTag = UserTag.GetNewObject(req.params.iduser, req.params.idtag);
     }else{
@@ -32,9 +32,9 @@ exports.update = async (req, res) => {
     //Update in DB
     let newUserTag = await UserTag.createOrUpdate(userTag);
     //Update in Cache
-    DataManager.UpdateCacheUserTag(newUserTag);
+    CacheManager.UpdateCacheUserTag(newUserTag);
 
-    let newTags = DataManager.GetUserTags(req.params.iduser);
+    let newTags = CacheManager.GetUserTags(req.params.iduser);
     //console.log(userTag1);
 
     ObjectResult.SendOk(res, newTags);

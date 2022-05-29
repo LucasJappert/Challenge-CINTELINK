@@ -36,9 +36,6 @@ export default {
             if (this.loggedUser == null) return false;
             return this.loggedUser.Rol == 99;
         },
-        // getUserId(){
-        //     return this.GetLoggedUser().Id;
-        // },
         getNickName(){
             return this.GetLoggedUser().Nick;
         },

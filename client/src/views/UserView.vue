@@ -89,8 +89,7 @@ export default {
         let result = await api.GetNotifications(this.getUserId);
         this.$store.dispatch("notifications/setNotifications", result);
 
-        let tags = await api.GetTags();
-        this.$store.dispatch("tags/setTags", tags);
+        await this.$store.dispatch("tags/setTags");
 
         let myTags = await api.GetMyTags(this.getUserId);
         this.$store.dispatch("tags/setMyTags", myTags);

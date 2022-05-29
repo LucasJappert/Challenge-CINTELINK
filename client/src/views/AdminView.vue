@@ -55,6 +55,7 @@ export default {
     },
     async created(){
         this.notifications = await api.GetAllNotifications();
+        await this.$store.dispatch("tags/setTags");
     },
     methods:{
         async AddNotificationAsync() {
@@ -97,6 +98,9 @@ export default {
     computed:{
         getNotifications(){
             return this.notifications.sort((a, b) => a.Id - b.Id).reverse();
+        },
+        getTags(){
+            return this.$store.getters["tags/getTags"];
         },
     }
 };

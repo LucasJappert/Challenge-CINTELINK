@@ -1,5 +1,5 @@
 const Log = require('../utils/log');
-const DataManager = require("./dataManager");
+const CacheManager = require("./cacheManager");
 const EventEmitter = require("../helpers/eventEmitter");
 
 
@@ -42,27 +42,27 @@ class UserSocket {
             const idNotiUser = json.updateReadingDateIdNotiUser;
             if(this.user == null) return;
 
-            await DataManager.ChangeReadingDateOfANotificationAsync(idNotiUser);
-            let updatedNoti = DataManager.GetNotificationModelFromIdNotiUser(idNotiUser);
+            await CacheManager.ChangeReadingDateOfANotificationAsync(idNotiUser);
+            let updatedNoti = CacheManager.GetNotificationModelFromIdNotiUser(idNotiUser);
             this.SendMessageAsync({ newNotification: updatedNoti});
         }
         if(json.loggedUser != null){
             console.log(`Usuario logueado! ${json.loggedUser.Id}`);
-            this.Initialize(DataManager.GetUser(json.loggedUser.Id));
+            this.Initialize(CacheManager.GetUser(json.loggedUser.Id));
         }
     }
     Initialize(user){
         this.user = user;
         if (this.user == null) return;
 
-        this.user.tags = DataManager.GetUserTagsId(this.user.Id);//TODO: Eliminar
+        this.user.tags = CacheManager.GetUserTagsId(this.user.Id);//TODO: Eliminar
     }
     SendNotificationToOnlineUserEvent(newNoti){
         if (this.user == null) {//Should't happen
             this.socket.disconnect();
             return;
         }
-        const tagsId = DataManager.GetUserTagsId(this.user.Id);
+        const tagsId = CacheManager.GetUserTagsId(this.user.Id);
         if (tagsId.includes(newNoti.IdTag)){
             this.SendMessageAsync({ newNotification: newNoti});
         }

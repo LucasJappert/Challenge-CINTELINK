@@ -1,6 +1,6 @@
 const Notification = require("../models/Notification.model");
 const { ObjectResult } = require('../helpers/objectResult');
-const DataManager = require("../services/dataManager");
+const CacheManager = require("../services/cacheManager");
 
 
 exports.create = async (req, res) => {
@@ -23,20 +23,20 @@ exports.getByUser = async (req, res) => {
     if (req.params.iduser == null) {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
     }
-    let notifications = await DataManager.GetAllNotificationsByUser(req.params.iduser);
+    let notifications = await CacheManager.GetAllNotificationsByUser(req.params.iduser);
     ObjectResult.SendOk(res, notifications);
 };
 exports.getByUserFilterSent = async (req, res) => {
     if (req.params.iduser == null) {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
     }
-    let notifications = await DataManager.GetSentNotificationsByUser(req.params.iduser);
+    let notifications = await CacheManager.GetSentNotificationsByUser(req.params.iduser);
     ObjectResult.SendOk(res, notifications);
 };
 
 exports.getAll = async (req, res) => {
     //TODO: poner filtro para que sólo la pueda acceder un ADMIN
-    let result = DataManager.GetAllNotifications();// await Notification.getAll();
+    let result = CacheManager.GetAllNotifications();// await Notification.getAll();
     ObjectResult.SendOk(res, result);
 };
 
@@ -47,12 +47,12 @@ exports.delete = async (req, res) => {
     }
 
     //TODO: Chequear en cache si ya existe
-    let sentNotificationsIds = DataManager.GetNoDuplicateSentNotificationIds();
+    let sentNotificationsIds = CacheManager.GetNoDuplicateSentNotificationIds();
 
     if(sentNotificationsIds.includes(Number(req.params.id))){
         ObjectResult.SendBadRequest(res, { message: "The notification was already sent and it cant be removed!"});
     }else{
-        DataManager.RemoveCacheNotification(req.params.id);
+        CacheManager.RemoveCacheNotification(req.params.id);
         let result = await Notification.delete(req.params.id);
         if (result > 0)
             ObjectResult.SendOk(res, {});

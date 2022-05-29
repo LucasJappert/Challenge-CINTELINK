@@ -48,7 +48,7 @@ Notification.getAll = async () => {
 Notification.create = async (notification) => {
     let result = null;
     try {
-
+        console.log(notification.DateToSend);
         const fixedDate = ConvertToArgDate(notification.DateToSend);//TODO: Revisar todas estas fechas
         let pool = await MSSQL.connect(sqlConn);
         let q = `

@@ -1,6 +1,6 @@
 const NotificationUser = require("../models/NotificationUser.model");
 const { ObjectResult } = require('../helpers/objectResult');
-const DataManager = require("../services/dataManager");
+const CacheManager = require("../services/cacheManager");
 
 exports.delete = async (req, res) => {
     // TODO: VALIDATOR
@@ -11,7 +11,7 @@ exports.delete = async (req, res) => {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
     }
 
-    let result = await DataManager.RemoveSentNotificationUserAsync(req.params.id);
+    let result = await CacheManager.RemoveSentNotificationUserAsync(req.params.id);
 
     if (result == null)
         ObjectResult.SendInternalServer(res);

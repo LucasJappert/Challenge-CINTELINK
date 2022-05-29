@@ -1,3 +1,4 @@
+import api from '../../services/api.service';
 const state = {
     tags: [],
     myTags: []
@@ -30,8 +31,9 @@ const mutations = {
 };
 
 const actions = {
-    setTags({ commit }, data) {
-        commit('setTags', data);
+    async setTags({ commit }) {
+        let tags = await api.GetTags();
+        commit('setTags', tags);
     },
     setMyTags({ commit }, data) {
         commit('setMyTags', data);
