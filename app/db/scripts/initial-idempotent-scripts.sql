@@ -6,13 +6,12 @@ IF DB_ID('Cintelink') IS NULL
 	END
 GO
 
-USE Cintelink;
+USE Cintelink
 
 -- CREAMOS USUARIO PARA LOGUEARNOS AL SERVER
 IF SUSER_ID('Cintelink') IS NULL
 	BEGIN
-		CREATE LOGIN Cintelink WITH PASSWORD = '12341234';
-        GO
+		CREATE LOGIN Cintelink WITH PASSWORD = '12341234'
         EXEC master..sp_addsrvrolemember @loginame = N'Cintelink', @rolename = N'sysadmin';
 		PRINT 'Usuario Cintelink (pass 12341234) creado!';
 	END
@@ -62,8 +61,6 @@ IF (NOT EXISTS(SELECT TOP 1 * FROM sys.tables WHERE [name] = 'User'))
 		PRINT 'Tabla User creada!';
     END
 GO
-INSERT INTO [User] (Nick, Pass, Rol, CreationDate, CanceledDate)
-VALUES('ADMIN', '1234', 99, getdate(), null);
 
 IF (NOT EXISTS(SELECT TOP 1 * FROM sys.tables WHERE [name] = 'NotificationUser'))
     BEGIN
@@ -99,4 +96,25 @@ IF (NOT EXISTS(SELECT TOP 1 * FROM sys.tables WHERE [name] = 'UserTag'))
         )
 		PRINT 'Tabla UserTag creada!';
     END
+GO
+
+IF NOT EXISTS(SELECT TOP 1 * FROM [User] WHERE Nick = 'ADMIN')
+	INSERT INTO [User] (Nick, Pass, Rol, CreationDate, CanceledDate)
+	VALUES('ADMIN', '', 99, getdate(), null);
+GO
+IF NOT EXISTS(SELECT TOP 1 * FROM [Tag] WHERE [Name] = 'Seccion 1')
+	INSERT INTO [dbo].[Tag] ([Name], [CreationDate], [CanceledDate])
+		 VALUES ('Seccion 1', GETDATE(), NULL)
+GO
+IF NOT EXISTS(SELECT TOP 1 * FROM [Tag] WHERE [Name] = 'Seccion 2')
+INSERT INTO [dbo].[Tag] ([Name], [CreationDate], [CanceledDate])
+     VALUES ('Seccion 2', GETDATE(), NULL)
+GO
+IF NOT EXISTS(SELECT TOP 1 * FROM [Tag] WHERE [Name] = 'Seccion 3')
+INSERT INTO [dbo].[Tag] ([Name], [CreationDate], [CanceledDate])
+     VALUES ('Seccion 3', GETDATE(), NULL)
+GO
+IF NOT EXISTS(SELECT TOP 1 * FROM [Tag] WHERE [Name] = 'Seccion 4')
+INSERT INTO [dbo].[Tag] ([Name], [CreationDate], [CanceledDate])
+     VALUES ('Seccion 4', GETDATE(), NULL)
 GO
