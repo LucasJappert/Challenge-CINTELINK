@@ -9,7 +9,7 @@ const tools = require("../utils/tools");
 let CacheNotification, CacheSentNotificationsUser, CacheTag, CacheUser, CacheUserTag = [{}, {}, {}, {}, {}];
 
 let LoadingsOk = false;
-module.exports.InitializeCache = async() => {//TODO: Que los métodos async terminen con Async
+module.exports.InitializeCacheAsync = async() => {
     CacheNotification = await Notification.getAll();
     CacheSentNotificationsUser = await NotificationUser.getAll();
     CacheTag = await Tag.getAll();
@@ -149,7 +149,7 @@ module.exports.GetNoDuplicateSentNotificationIds = () => {
     let sentNotifications = Object.values(CacheSentNotificationsUser)
                         .map(noti => noti.IdNotification);
     return [...new Set(sentNotifications)];
-}//TODO: hacer const
+}
 //#endregion ------------------------------
 
 //#region SETTERS
@@ -199,9 +199,7 @@ module.exports.RemoveCacheUserTag = (id) => {
 }
 //#endregion ------------------------------
 
-
-
-
+//#region WORKERs
 /**
  * The function is responsible for saving in cache and in DB
  */
@@ -216,11 +214,7 @@ module.exports.ChangeReadingDateOfANotificationAsync = async (idNotiUser) => {
     //update DB
     return await NotificationUser.createOrUpdate(notiUser);
 }
-module.exports.UpdateNotificationUserAsync = async (userId, notiId, readingDate = null) => {
-    let newNotificationUser = await NotificationUser.createOrUpdate(userId, notiId, readingDate);
-    CacheSentNotificationsUser[newNotificationUser.Id] = newNotificationUser;
-    return newNotificationUser;
-}//TODO: Ver de eliminar
+//#endregion ------------------------------
 
 
 

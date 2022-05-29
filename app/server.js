@@ -16,7 +16,7 @@ server.listen(port, async () => {
 
     const CacheManager = require("./services/cacheManager");
     (async () => {
-        await CacheManager.InitializeCache();
+        await CacheManager.InitializeCacheAsync();
         require("./services/socketManager")(server);
         NotificationsProcess.StartProcess();
     })();

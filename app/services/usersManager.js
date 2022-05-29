@@ -76,7 +76,7 @@ class UserSocket {
 
 
 
-module.exports.Add = async (socket) => {
+module.exports.Add = (socket) => {
     if (socket == null) return;
 
     Log.Blue(`Alguien se ha conectado, id: ${socket.id}`);

@@ -1,6 +1,4 @@
-const MSSQL = require("mssql");
-const sqlConn = require("../db/sqlConn");
-const Log = require("../utils/log");
+const { Log, MSSQL, sqlConn} = require("./base.model");
 
 const User = function (user){
     this.Id = user.Id;

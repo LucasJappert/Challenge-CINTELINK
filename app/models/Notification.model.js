@@ -1,18 +1,7 @@
-const MSSQL = require("mssql");
-const sqlConn = require("../db/sqlConn");
-const Log = require("../utils/log");
+const { Log, MSSQL, sqlConn} = require("./base.model");
 const EventEmitter = require("../helpers/eventEmitter");
 const { ConvertToArgDate } = require("../utils/tools");
 
-// const Notification = function (notification){
-//     this.Id = notification.Id;
-//     this.Title = notification.Title;
-//     this.Message = notification.Message;
-//     this.IdTag = notification.IdTag;
-//     this.#DateToSend = notification.DateToSend;
-//     this.CreationDate = notification.CreationDate;
-//     this.CanceledDate = notification.CanceledDate;
-// }
 class Notification{
     constructor(notification){
         this.Id = notification.Id;
@@ -20,7 +9,7 @@ class Notification{
         this.Message = notification.Message;
         this.IdTag = notification.IdTag;
         this.DateToSend = notification.DateToSend;
-        this.CreationDate = notification.CreationDate;//.RemoveTZ();
+        this.CreationDate = notification.CreationDate;
         this.CanceledDate = notification.CanceledDate;
     }
 }

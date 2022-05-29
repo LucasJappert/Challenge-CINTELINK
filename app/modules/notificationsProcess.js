@@ -8,7 +8,7 @@ const NotificationsProcess = async () => {
         let unsentNotis = CacheManager.GetUnsentNotifications();
         for (let i = 0; i < unsentNotis.length; i++) {
             const noti = unsentNotis[i];
-            if (noti.DateToSend < tools.now()){//TODO: Revisar
+            if (noti.DateToSend < tools.now()){
                 console.log(`Notificación lista para enviar: --> ${noti.Id}`);
                 let usersId = CacheManager.GetUsersIdSubscribedToATag(noti.IdTag);
                 for (let n = 0; n < usersId.length; n++) {
