@@ -14,6 +14,8 @@ eliminarlas.
 7. ✅ Las notificaciones deben poder ser para un usuario específico, y no deben ser accesibles por otros.
 8. ✅ Usar el sistema y motor de base de datos que prefiera, y explicar por qué tomó su decisión.
 9. ✅ Lenguaje a discreción, preferentemente Node Js o PHP.
+- EXTRAS:
+1. ✅ Implementación de un sistema de audit logging: Se usó un logging propio acompañado con Bunyan para persistir algunos logs en archivos físicos.
 
 ### Compiles and minifies for production
 ```
