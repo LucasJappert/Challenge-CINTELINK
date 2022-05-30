@@ -25,9 +25,9 @@ eliminarlas.
 3. ☐ Testing: Quedaría para otra etapa por falta de tiempo, pero se podrían haber implementado tests tanto unitarios como de integración con Jest. También lo ideal hubiera sido trabajar bajo la metodología TDD.
 4. ☐ DevOps: También hubiera sido ideal trabajar con alguna plataforma que ofrezca servicios de devops, como Azure, planificando todas las etapas del proyecto, proyectando esfuerzos y completando el circuito de US. Como así también, trabajar con todo lo que engloba la integración contínua, creación de Pull Requests, tests automáticos, etc.
 
-### Proyecto API
+### 📡 Proyecto API 📡
 [Ir al Readme](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/api)
 
-### Proyecto CLIENT
+### 💻 Proyecto CLIENT 💻
 [Ir al Readme](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/api)
 
