@@ -6,7 +6,7 @@ const UserTag = require("../models/UserTag.model");
 const EventEmitter = require("../helpers/eventEmitter");
 const tools = require("../utils/tools");
 
-let [CacheNotification, CacheSentNotificationsUser, CacheTag, CacheUser, CacheUserTag] = [{}, {}, {}, {}, {}];
+let CacheNotification, CacheSentNotificationsUser, CacheTag, CacheUser, CacheUserTag = [{}, {}, {}, {}, {}];
 
 let LoadingsOk = false;
 module.exports.InitializeCacheAsync = async() => {
@@ -15,7 +15,7 @@ module.exports.InitializeCacheAsync = async() => {
     CacheTag = await Tag.getAll();
     CacheUser = await User.getAll();
     CacheUserTag = await UserTag.getAll();
-    this.LoadingsOk = true;
+    LoadingsOk = true;
 }
 
 //#region GETTERS
@@ -32,7 +32,7 @@ const GetIdNotiUser = (notificationId, userId) => {
     return result ? result.Id : null;
 }
 module.exports.GetLoadingsOk = () => {
-    return this.LoadingsOk;
+    return LoadingsOk;
 };
 module.exports.GetCacheNotificationUser = (idNotification, userId) => {
     let result = Object.values(CacheSentNotificationsUser)
@@ -93,19 +93,19 @@ module.exports.GetUserTagsId = (userId) => {
 
 //Obtener todos los tags
 module.exports.GetAllTags = () => {
-    if (!this.LoadingsOk) return [];
+    if (!LoadingsOk) return [];
     return Object.values(CacheTag);
 }
 //Obtener todas las notificaciones
 module.exports.GetAllNotifications = () => {
-    if (!this.LoadingsOk) return;
+    if (!LoadingsOk) return;
     return Object.values(CacheNotification);
 }
 //Obtener todas las notificaciones enviadas de un usuario
-module.exports.GetSentNotificationsByUser = (userId) => {
-    if (!this.LoadingsOk) return;
+module.exports.GetNoRemovedSentNotificationsByUser = (userId) => {
+    if (!LoadingsOk) return;
     let sentNotifications = Object.values(CacheSentNotificationsUser)
-                        .filter(noti => noti.IdUser == userId);
+                        .filter(noti => noti.IdUser == userId && noti.CanceledDate == null);
 
     let result = [];
     sentNotifications.forEach(noti => {
@@ -191,7 +191,6 @@ module.exports.RemoveSentNotificationUserAsync = async (idNotiUser) => {
     //Notify to user
     EventEmitter.EmitNotificationUserRemoved(result);
     //Remove cache
-    delete CacheSentNotificationsUser[idNotiUser];
     return result;
 }
 module.exports.RemoveCacheUserTag = (id) => {

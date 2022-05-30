@@ -35,7 +35,7 @@ exports.getByUserFilterSent = async (req, res) => {
         ObjectResult.SendBadRequest(res, { message: "Invalid parameters!"});
         return;
     }
-    let notifications = await CacheManager.GetSentNotificationsByUser(req.params.iduser);
+    let notifications = await CacheManager.GetNoRemovedSentNotificationsByUser(req.params.iduser);
     ObjectResult.SendOk(res, notifications);
 };
 
