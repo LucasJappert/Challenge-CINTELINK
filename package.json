@@ -1,13 +1,13 @@
 {
   "name": "challenge-cintelink",
   "version": "0.0.1",
-  "main": "server.js",
+  "main": "./app/server.js",
   "scripts": {
-    "dev": "nodemon app/server.js | bunyan",
-    "start": "node dist/server.js",
+    "dev": "nodemon ./app/server.js | bunyan",
     "tests": "jest --verbose --silent",
     "tests:watch": "npm run test -- --watch",
-    "build": "babel ../app --out-dir ../dist --ignore node_modules/**/*.js . -s"
+    "build": "babel app --out-dir dist",
+    "start": "npm run build && node dist/server.js"
   },
   "keywords": [],
   "author": "Lucas Jappert",
@@ -26,6 +26,7 @@
   "devDependencies": {
     "@babel/cli": "^7.17.10",
     "@babel/core": "^7.18.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.18.2",
     "@babel/preset-env": "^7.18.2",
     "eslint": "^7.32.0",
     "jest": "^27.5.1",

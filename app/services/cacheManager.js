@@ -6,7 +6,7 @@ const UserTag = require("../models/UserTag.model");
 const EventEmitter = require("../helpers/eventEmitter");
 const tools = require("../utils/tools");
 
-let CacheNotification, CacheSentNotificationsUser, CacheTag, CacheUser, CacheUserTag = [{}, {}, {}, {}, {}];
+let [CacheNotification, CacheSentNotificationsUser, CacheTag, CacheUser, CacheUserTag] = [{}, {}, {}, {}, {}];
 
 let LoadingsOk = false;
 module.exports.InitializeCacheAsync = async() => {
@@ -15,7 +15,7 @@ module.exports.InitializeCacheAsync = async() => {
     CacheTag = await Tag.getAll();
     CacheUser = await User.getAll();
     CacheUserTag = await UserTag.getAll();
-    this.LoadingsOk = true;
+    LoadingsOk = true;
 }
 
 //#region GETTERS
@@ -131,13 +131,6 @@ module.exports.GetAllNotificationsByUser = (userId) => {
     allNotis = allNotis.map(noti => this.GetNotificationModelForUser(noti, userId));
     return allNotis;
 }
-//Obtener todas las notificaciones enviadas
-module.exports.GetSentNotifications = () => {
-    let noDuplicateIds = this.GetNoDuplicateSentNotificationIds();
-    let result = Object.values(CacheNotification)
-                .filter(noti => noDuplicateIds.includes(noti.Id));
-    return result;
-}
 //Obtener todas las notificaciones por enviar
 module.exports.GetUnsentNotifications = () => {
     let noDuplicateIds = this.GetNoDuplicateSentNotificationIds();
@@ -149,6 +142,13 @@ module.exports.GetNoDuplicateSentNotificationIds = () => {
     let sentNotifications = Object.values(CacheSentNotificationsUser)
                         .map(noti => noti.IdNotification);
     return [...new Set(sentNotifications)];
+}
+//Obtener todas las notificaciones enviadas
+module.exports.GetSentNotifications = () => {
+    let noDuplicateIds = this.GetNoDuplicateSentNotificationIds();
+    let result = Object.values(CacheNotification)
+                .filter(noti => noDuplicateIds.includes(noti.Id));
+    return result;
 }
 //#endregion ------------------------------
 

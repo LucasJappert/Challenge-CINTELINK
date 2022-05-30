@@ -1,7 +1,7 @@
 const colors = require('colors');
 
 var Logger = require('bunyan');
-const pkg = require("../package.json");
+const pkg = require("../../package.json");
 module.exports.Bunyan = new Logger({
   name: pkg.name,
   streams: [
