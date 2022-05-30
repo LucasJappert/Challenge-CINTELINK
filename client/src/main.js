@@ -5,12 +5,10 @@ import general from './mixins/general.mixin';
 import Header from "./components/Header";
 import store from "./store/index";
 
-// const io = require('socket.io')();
-
 Vue.component("Header", Header);
 
 Vue.mixin(general);
-// Vue.mixin(userService);
+
 Vue.config.productionTip = false;
 
 new Vue({

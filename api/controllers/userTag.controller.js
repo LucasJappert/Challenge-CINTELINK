@@ -32,7 +32,6 @@ exports.update = async (req, res) => {
     CacheManager.UpdateCacheUserTag(newUserTag);
 
     let newTags = CacheManager.GetUserTags(req.params.iduser);
-    //console.log(userTag1);
 
     ObjectResult.SendOk(res, newTags);
 };

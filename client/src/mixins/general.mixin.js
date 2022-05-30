@@ -3,19 +3,12 @@ export default {
         return{
             loggedUser: null,
             showAllNotifications: true,
-            // myNotifications:[],
-            // showAllNotifications: true,
         }
     },
     created(){
         this.loggedUser = this.GetLoggedUser();
-        //console.log(2222);
     },
     mounted(){
-        // if (this.loggedUser == null) {
-        //     this.$router.push({ name: "Login" });
-        //     return;
-        // }
     },
     methods:{
         GetLoggedUser() {

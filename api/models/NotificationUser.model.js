@@ -37,7 +37,6 @@ NotificationUser.getAll = async () => {
     return result;
 }
 
-// NotificationUser.createOrUpdate = async (userId, notiId, readingDate = null) => {
 NotificationUser.createOrUpdate = async (notiUser) => {
     if (notiUser == null) throw new Error("notiUser can't be null!");//TODO: Crear test aca
     let result = {};

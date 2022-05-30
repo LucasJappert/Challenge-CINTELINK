@@ -85,7 +85,6 @@ export default {
         }
         await SocketioService.SetupSocketConnection(this.loggedUser);
 
-        // this.myNotifications = await api.GetNotifications(this.getUserId);
         let result = await api.GetNotifications(this.getUserId);
         this.$store.dispatch("notifications/setNotifications", result);
 
@@ -101,7 +100,6 @@ export default {
 
             if (data.newConnection != null) {
                 SocketioService.SendMessage({ loggedUser: this.loggedUser });
-                //await SocketioService.SetupSocketConnection(this.loggedUser);
             }
 
             if (data.newNotification != null) {
