@@ -2,6 +2,9 @@
 
 Consiste en un sistema de notificaciones instantáneas para usuarios de una plataforma, en la cual usuarios podrán subscribirse a diferentes secciones.
 Por otra parte, un usuario ADMIN será el encargado de coordinar la carga y envío de notificaciones, enlazadas a una sección, las cuales serán enviadas a todos los usuarios subscriptos a esa sección.
+Para lograr este sistema, el proyecto se divide en 2 subproyectos:
+- Proyecto [api](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/api).
+- Proyecto [client](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/client).
 
 ### FUNCIONALIDADES/REQUISITOS PROPUESTOS
 1. ✅ Las notificaciones deben incluir mínimamente un timestamp y un mensaje.
@@ -18,14 +21,12 @@ eliminarlas.
 --> Se optó por Node JS ya que es, junto a .NET, el entorno que suelo usar cotidianamente. De manera profesional (en el trabajo actual) se trabaja todo con .NET, pero particularmente prefiero Node JS.
 - EXTRAS:
 1. ✅ Implementación de un sistema de audit logging: Se usó un logging propio acompañado con Bunyan para persistir algunos logs en archivos físicos.
-2. ✅ Generar un método de deploy de la aplicación: ver en el readme del proyecto [api](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/api). Se podría haber configurado un yml para que deploye automáticamente a Azure (que es donde mayor experiencia tengo), pero allí  el servicio de base de datos no es gratuito.
+2. ✅ Generar un método de deploy de la aplicación: ver en el readme del proyecto [api](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/api). Como extra se podría haber configurado un yml para que deploye automáticamente a Azure (por ej) cada vez que se modifica master, pero allí  el servicio de base de datos no es gratuito.
 3. ☐ Testing: Quedaría para otra etapa por falta de tiempo, pero se podrían haber implementado tests tanto unitarios como de integración con Jest. También lo ideal hubiera sido trabajar bajo la metodología TDD.
 4. ☐ DevOps: También hubiera sido ideal trabajar con alguna plataforma que ofrezca servicios de devops, como Azure, planificando todas las etapas del proyecto, proyectando esfuerzos y completando el circuito de US. Como así también, trabajar con todo lo que engloba la integración contínua, creación de Pull Requests, tests automáticos, etc.
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### Proyecto API
+[Ir al Readme] (https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/api)
 
 ### Lints and fixes files
 ```
