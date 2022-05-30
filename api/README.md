@@ -2,6 +2,10 @@
 El server (api) se desarrolló utilizando node js + express, como herramientas principales.
 Las demás dependencias, como mssql, bunyan, etc, pueden revisarse en las dependencias del package.
 
+⚡El server cuenta con un manejo de caché interna (services/cacheManager), la cual es utilizada para, principalmente, reducir el uso del motor sql.
+Por otra parte, brinda mayor respuesta ante peticiones GETs ya que no tiene que buscar datos en la DB.
+De esta manera se logra una respuesta en tiempos óptimos, incluso ante un gran tráfico de peticiones.
+
 ## Setup del proyecto
 ```
 - npm install --> Instala las dependencias que necesitará el proyecto.
