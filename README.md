@@ -3,8 +3,8 @@
 Consiste en un sistema de notificaciones instantáneas para usuarios de una plataforma, en la cual usuarios podrán subscribirse a diferentes secciones.
 Por otra parte, un usuario ADMIN será el encargado de coordinar la carga y envío de notificaciones, enlazadas a una sección, las cuales serán enviadas a todos los usuarios subscriptos a esa sección.
 Para lograr este sistema, el proyecto se divide en 2 subproyectos:
-- Proyecto [api](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/api).
-- Proyecto [client](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/client).
+- 📡 Proyecto [api](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/api).
+- 💻 Proyecto [client](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/client).
 
 ### FUNCIONALIDADES/REQUISITOS PROPUESTOS
 1. ✅ Las notificaciones deben incluir mínimamente un timestamp y un mensaje.
@@ -26,12 +26,8 @@ eliminarlas.
 4. ☐ DevOps: También hubiera sido ideal trabajar con alguna plataforma que ofrezca servicios de devops, como Azure, planificando todas las etapas del proyecto, proyectando esfuerzos y completando el circuito de US. Como así también, trabajar con todo lo que engloba la integración contínua, creación de Pull Requests, tests automáticos, etc.
 
 ### Proyecto API
-[Ir al Readme] (https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/api)
+[Ir al Readme](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/api)
 
-### Lints and fixes files
-```
-npm run lint
-```
+### Proyecto CLIENT
+[Ir al Readme](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/api)
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
