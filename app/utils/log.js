@@ -10,9 +10,23 @@ module.exports.Bunyan = new Logger({
     //     level: 'debug'
     // },
     {
-      path: 'logs/api.log',
-      level: 'trace'
-    }
+        type: "rotating-file",
+        path: 'trace.log',
+        level: 'trace',
+        period: '1d'
+    },
+    {
+        type: "rotating-file",
+        path: 'error.log',
+        level: 'error',
+        period: '1d'
+    },
+    {
+        type: "rotating-file",
+        path: 'info.log',
+        level: 'info',
+        period: '1d'
+    },
   ],
   serializers: {
     req: Logger.stdSerializers.req

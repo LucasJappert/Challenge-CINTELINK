@@ -28,6 +28,10 @@ class UserSocket {
 
     }
 
+    Initialize(user){
+        this.user = user;
+        if (this.user == null) return;
+    }
     async #SendMessageAsync(json) {
         this.socket.emit("message", json);
     }
@@ -47,10 +51,6 @@ class UserSocket {
             console.log(`Usuario logueado! ${json.loggedUser.Id}`);
             this.Initialize(CacheManager.GetUser(json.loggedUser.Id));
         }
-    }
-    Initialize(user){
-        this.user = user;
-        if (this.user == null) return;
     }
     #SendNotificationToOnlineUserEvent(newNoti){
         if (this.user == null) {//Should't happen
@@ -79,16 +79,16 @@ class UserSocket {
 module.exports.Add = (socket) => {
     if (socket == null) return;
 
-    Log.Blue(`Alguien se ha conectado, id: ${socket.id}`);
 
     usersOn[socket.id] = new UserSocket(socket);
+    Log.Blue(`Alguien se ha conectado, id: ${socket.id}`);
 }
 
 module.exports.Remove = (socket) => {
     if (socket == null) return;
 
-    console.log(`Alquien se ha desconectado, id: ${socket.id}`);
     delete usersOn[socket.id];
+    Log.Yellow(`Alquien se ha desconectado, id: ${socket.id}`);
 }
 
 module.exports.GetAll = () => {
