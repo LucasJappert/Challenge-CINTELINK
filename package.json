@@ -1,12 +1,12 @@
 {
   "name": "challenge-cintelink",
   "version": "0.0.1",
-  "main": "./app/server.js",
+  "main": "./api/server.js",
   "scripts": {
-    "dev": "nodemon ./app/server.js | bunyan",
+    "dev": "nodemon ./api/server.js | bunyan",
     "tests": "jest --verbose --silent",
     "tests:watch": "npm run test -- --watch",
-    "build": "babel app --out-dir dist",
+    "build": "babel api --out-dir dist",
     "start": "npm run build && node dist/server.js"
   },
   "keywords": [],
