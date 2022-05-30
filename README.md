@@ -5,6 +5,8 @@ Por otra parte, un usuario ADMIN será el encargado de coordinar la carga y env�
 Para lograr este sistema, el proyecto se divide en 2 subproyectos:
 - 📡 Proyecto [api](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/api).
 - 💻 Proyecto [client](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/client).
+Cabe recalcar, que como es un sistema real-time, además de las funciones que provee la api, existe una conexión permanente entre cliente y servidor, llevada a cabo utilizando socket.io.
+De esta manera, el servidor puede enviar mensajes al cliente (y viceversa) para que éste pueda estar actualizado de nuevas notificaciones, sin necesitad de hacer una petición a la api para actualizarlas.
 
 ### FUNCIONALIDADES/REQUISITOS PROPUESTOS
 1. ✅ Las notificaciones deben incluir mínimamente un timestamp y un mensaje.
