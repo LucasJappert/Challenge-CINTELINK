@@ -1,4 +1,4 @@
-# 📲 SISTEMA DE NOTIFICACIONES REAL-TIME 📲
+# 📲 SISTEMA DE NOTIFICACIONES REAL-TIME - CHALLENGE CINTELINK 📲
 
 Consiste en un sistema de notificaciones instantáneas para usuarios de una plataforma, en la cual usuarios podrán subscribirse a diferentes secciones.
 Por otra parte, un usuario ADMIN será el encargado de coordinar la carga y envío de notificaciones, enlazadas a una sección, las cuales serán enviadas a todos los usuarios subscriptos a esa sección.
@@ -29,5 +29,5 @@ eliminarlas.
 [Ir al Readme](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/api)
 
 ### 💻 Proyecto CLIENT 💻
-[Ir al Readme](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/api)
+[Ir al Readme](https://github.com/LucasJappert/Challenge-CINTELINK/tree/master/client)
 

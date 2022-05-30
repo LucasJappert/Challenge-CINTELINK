@@ -15,7 +15,7 @@ module.exports.InitializeCacheAsync = async() => {
     CacheTag = await Tag.getAll();
     CacheUser = await User.getAll();
     CacheUserTag = await UserTag.getAll();
-    LoadingsOk = true;
+    this.LoadingsOk = true;
 }
 
 //#region GETTERS
@@ -32,7 +32,7 @@ const GetIdNotiUser = (notificationId, userId) => {
     return result ? result.Id : null;
 }
 module.exports.GetLoadingsOk = () => {
-    return LoadingsOk;
+    return this.LoadingsOk;
 };
 module.exports.GetCacheNotificationUser = (idNotification, userId) => {
     let result = Object.values(CacheSentNotificationsUser)
