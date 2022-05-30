@@ -1,4 +1,4 @@
-# Proyecto CLIENT
+# 💻 Proyecto CLIENT 💻
 El cliente se desarrolló con vue 2 y cuenta con una pantalla de inicio (login), y 2 secciones más según el rol del usuario logueado.
 
 ## Setup del proyecto

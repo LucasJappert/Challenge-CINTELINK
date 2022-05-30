@@ -1,4 +1,4 @@
-# Proyecto API
+# 📡 Proyecto API 📡
 El server (api) se desarrolló utilizando node js + express, como herramientas principales.
 Las demás dependencias, como mssql, bunyan, etc, pueden revisarse en las dependencias del package.
 
