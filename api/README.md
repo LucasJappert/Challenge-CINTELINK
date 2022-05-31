@@ -7,9 +7,8 @@ Por otra parte, brinda mayor respuesta ante peticiones GETs ya que no tiene que 
 De esta manera se logra una respuesta en tiempos óptimos, incluso ante un gran tráfico de peticiones.
 
 ## Setup del proyecto
+Asegurarse de estar en el path "./api". Es decir, en la terminal, estando en el root del proyecto general, ejecutar el comando "cd api". Luego de esto ya podemos ejecutar los siguientes:
 ```
-Asegurarse de estar en el path "./api". Es decir, en la terminal, estando en el root del proyecto general, 
-ejecutar el comando "cd api". Luego de esto ya podemos ejecutar los siguientes:
 - npm install --> Instala las dependencias que necesitará el proyecto.
 - npm run dev ⚠ --> Corre el servidor en dev en el puerto 2000 (configurado en el archivo .env).
 - npm run build  --> Compila y minifica, llevando todo a la carpeta dist.
