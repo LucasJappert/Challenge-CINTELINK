@@ -2,6 +2,14 @@ const colors = require('colors');
 
 var Logger = require('bunyan');
 const pkg = require("../../package.json");
+
+var fs = require('fs');
+var dir = './logs';
+
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}
+
 module.exports.Bunyan = new Logger({
   name: pkg.name,
   streams: [
@@ -11,19 +19,19 @@ module.exports.Bunyan = new Logger({
     // },
     {
         type: "rotating-file",
-        path: 'trace.log',
+        path: 'logs/trace.log',
         level: 'trace',
         period: '1d'
     },
     {
         type: "rotating-file",
-        path: 'error.log',
+        path: 'logs/error.log',
         level: 'error',
         period: '1d'
     },
     {
         type: "rotating-file",
-        path: 'info.log',
+        path: 'logs/info.log',
         level: 'info',
         period: '1d'
     },

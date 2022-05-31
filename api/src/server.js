@@ -1,5 +1,5 @@
 const Log = require("./utils/log");
-const app = require("./app");
+const app = require("./app/app");
 const http = require("http");
 const NotificationsProcess = require("./modules/notificationsProcess");
 
