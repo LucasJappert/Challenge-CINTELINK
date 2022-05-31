@@ -25,4 +25,4 @@ Asegurarse de estar en el path "./api". Es decir, en la terminal, estando en el 
 
 ### Observaciones
 - Una vez instaladas las dependencias y habiendo levantado el server (con npm run dev o start), deberíamos poder comprobar cómo el server está corriendo en un determinado puerto y apuntando a una determinada base de datos:
-<img alt="Lucas Jappert's LinkedIN" width="600px" src="https://github.com/LucasJappert/lucasjappert/blob/main/images/img4.PNG" />
+<img alt="Lucas Jappert's LinkedIN" width="600px" src="https://github.com/LucasJappert/lucasjappert/blob/main/images/img7.PNG" />
