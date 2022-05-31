@@ -2,6 +2,7 @@
 El cliente se desarrolló con vue 2 y cuenta con una pantalla de inicio (login), y 2 secciones más según el rol del usuario logueado.
 
 ## Setup del proyecto
+Asegurarse de estar en el path "./client". Es decir, en la terminal, estando en el root del proyecto general, ejecutar el comando "cd client". Luego de esto ya podemos ejecutar los siguientes:
 ```
 - npm install --> Instala las dependencias que necesitará el proyecto.
 - npm run dev --> Corre el servidor en dev.
