@@ -7,6 +7,7 @@ Por otra parte, brinda mayor respuesta ante peticiones GETs ya que no tiene que 
 De esta manera se logra una respuesta en tiempos óptimos, incluso ante un gran tráfico de peticiones.
 
 ## Setup del proyecto
+Asegurarse de estar en el path "./api". Es decir, en la terminal, estando en el root del proyecto general, ejecutar el comando "cd api". Luego de esto ya podemos ejecutar los siguientes:
 ```
 - npm install --> Instala las dependencias que necesitará el proyecto.
 - npm run dev ⚠ --> Corre el servidor en dev en el puerto 2000 (configurado en el archivo .env).
@@ -24,4 +25,4 @@ De esta manera se logra una respuesta en tiempos óptimos, incluso ante un gran 
 
 ### Observaciones
 - Una vez instaladas las dependencias y habiendo levantado el server (con npm run dev o start), deberíamos poder comprobar cómo el server está corriendo en un determinado puerto y apuntando a una determinada base de datos:
-<img alt="Lucas Jappert's LinkedIN" width="600px" src="https://github.com/LucasJappert/lucasjappert/blob/main/images/img4.PNG" />
+<img alt="Lucas Jappert's LinkedIN" width="600px" src="https://github.com/LucasJappert/lucasjappert/blob/main/images/img7.PNG" />
