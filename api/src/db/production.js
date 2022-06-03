@@ -1,13 +1,12 @@
 //TODO: Fill using prod variables
 module.exports = {
-    user: "Cintelink",
-    password: "12341234",
-    server: "DESKTOP-D0A346N\\SQLEXPRESS",
+    user: DB_USER,
+    password: DB_PASSWORD,
+    server: process.env.DB_SERVER,
     database: "Cintelink",
     connectionLimit: 100,
     options: {
         enableArithAbort: true,
-        encrypt: true,
-        trustedConnection: true
+        encrypt: true
     }
 };

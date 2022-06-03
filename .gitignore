@@ -135,3 +135,4 @@ api/logs/info.log.2
 api/logs/trace.log.0
 api/logs/trace.log.1
 api/logs/trace.log.2
+api/.env.production
