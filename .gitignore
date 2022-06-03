@@ -126,3 +126,12 @@ api/dist/services/socketManager.js
 api/dist/services/usersManager.js
 api/dist/utils/log.js
 api/dist/utils/tools.js
+api/logs/error.log.0
+api/logs/error.log.1
+api/logs/error.log.2
+api/logs/info.log.0
+api/logs/info.log.1
+api/logs/info.log.2
+api/logs/trace.log.0
+api/logs/trace.log.1
+api/logs/trace.log.2

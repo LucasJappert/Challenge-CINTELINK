@@ -2,6 +2,7 @@ require('dotenv').config();
 const logger = require('../middlewares/logger');
 const express = require("express");
 const app = express();
+const pkg = require("../../package.json");
 
 app.set("port", process.env.PORT || 3000);
 app.use(express.urlencoded({ extended: true }));
@@ -15,6 +16,8 @@ app.use((req, res, next) => {
     res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
     next();
 });
-
+app.get("/", (req, res) => {
+    res.status(200).json(`Hello there! App version: ${pkg.name}`);
+});
 module.exports = app;
 
