@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/550559d7-2206-4731-bc8c-8e6363eeea76/microsoft.web/sites/subscriptions/550559d7-2206-4731-bc8c-8e6363eeea76/resourceGroups/Lucas2021ResourseGroup/providers/Microsoft.Web/sites/cintelink-app",
+    "appService.deploySubpath": "api\\dist"
+}

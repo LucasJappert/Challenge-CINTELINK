@@ -17,7 +17,7 @@ app.use((req, res, next) => {
     next();
 });
 app.get("/", (req, res) => {
-    res.status(200).json(`Hello ${process.env.NODE_ENV}! App version: ${pkg.name}`);
+    res.status(200).json(`Hello ${process.env.NODE_ENV}! App version: ${pkg.version}`);
 });
 module.exports = app;
 
